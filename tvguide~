@@ -1,0 +1,16 @@
+from tvguide import *
+
+
+if __name__== "__main__":
+    """ Main for command-line version, with argument parsing, then calling root functions"""
+    import argparse,sys
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source",type=str,default=None,help="Input a single source",default=)
+    parser.add_argument("--infile",type=str,default=None,help="Input a csv file of sources")
+    parser.add_argument("--outfile",type=str,default=None,help="Output a csv file of sources")
+
+    if source is not None:
+    elif infile is not None:
+    else:
+        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be a name (e.g., 'Cyg X-1'), a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), or a TIC ID (e.g., '268644785').\n")
+

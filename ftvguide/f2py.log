@@ -1,0 +1,349 @@
+running build
+running config_cc
+unifing config_cc, config, build_clib, build_ext, build commands --compiler options
+running config_fc
+unifing config_fc, config, build_clib, build_ext, build commands --fcompiler options
+running build_src
+build_src
+building extension "viewf" sources
+f2py options: ['--debug-capi']
+f2py:> /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "switch" with "switch_bn".
+rmbadname1: Replacing "switch" with "switch_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "string" with "string_bn".
+rmbadname1: Replacing "len" with "len_bn".
+analyzevars: character array "character*(100) names(n_list)" is considered as "character names(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*(100) prompts(n_list)" is considered as "character prompts(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*(100) values(n_list)" is considered as "character values(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*(100) names(n_list)" is considered as "character names(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*(100) values(n_list)" is considered as "character values(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*(100) values(n_list)" is considered as "character values(n_list,(100))"; "intent(c)" is forced.
+analyzevars: character array "character*9 mnname(12)" is considered as "character mnname(12,9)"; "intent(c)" is forced.
+analyzevars: character array "character*26 sd_strng(2,13)" is considered as "character sd_strng(2,13,26)"; "intent(c)" is forced.
+analyzevars: character array "character*17 pg_strng(2,14)" is considered as "character pg_strng(2,14,17)"; "intent(c)" is forced.
+analyzevars: character array "character*26 sd_strng(2,13)" is considered as "character sd_strng(2,13,26)"; "intent(c)" is forced.
+Reading fortran codes...
+	Reading file 'cartesian.f' (format:fix,strict)
+	Reading file 'dcd_arg.f' (format:fix,strict)
+	Reading file 'dcd_dthm.f' (format:fix,strict)
+	Reading file 'eclip.f' (format:fix,strict)
+	Reading file 'getlun.f' (format:fix,strict)
+	Reading file 'julian.f' (format:fix,strict)
+	Reading file 'lentrim.f' (format:fix,strict)
+	Reading file 'nutate.f' (format:fix,strict)
+	Reading file 'prec.f' (format:fix,strict)
+	Reading file 'rd_astro.f' (format:fix,strict)
+	Reading file 'rd_real.f' (format:fix,strict)
+	Reading file 'sunpos.f' (format:fix,strict)
+	Reading file 'sys.f' (format:fix,strict)
+	Reading file 'tvg_calc.f' (format:fix,strict)
+	Reading file 'tvg_init.f' (format:fix,strict)
+	Reading file 'tvguide.inc' (format:fix)
+	Reading file 'tvguide.f' (format:fix,strict)
+	Reading file 'upcase.f' (format:fix,strict)
+	Reading file 'view.f' (format:fix,strict)
+	Reading file 'viewp.f' (format:fix,strict)
+	Reading file 'wt_astro.f' (format:fix,strict)
+Post-processing...
+	Block: viewf
+			Block: cel_carts
+			Block: ecl_carts
+			Block: vec_scalr
+			Block: vec_angle
+			Block: vec_prdct
+			Block: vec_renrm
+			Block: dcd_arg
+			Block: da_explc
+			Block: da_bypos
+			Block: da_fndwd
+			Block: dcd_dthm
+			Block: dd_pckup
+			Block: to_eclip
+			Block: fm_eclip
+			Block: eqecl_ds
+			Block: getlun
+			Block: julian
+			Block: lentrim
+			Block: set_nutate
+			Block: ark_prec
+			Block: prec_angles
+			Block: threed_angles
+			Block: rd_astro
+			Block: rd_real
+			Block: sun_elong
+			Block: sunsub
+			Block: arkopn
+			Block: unix_extend
+			Block: pwrite
+			Block: pwritel
+			Block: pwopen
+			Block: pwclos
+			Block: pwcommn
+			Block: writen
+			Block: addon
+			Block: spawn
+			Block: arkgcl
+			Block: tvg_calc
+			Block: tvg_init
+			Block: viewf
+			Block: upcase
+			Block: locase
+			Block: viewf
+			Block: viewf
+			Block: wt_astro
+Post-processing (stage 2)...
+Building modules...
+	Building module "viewf"...
+		Constructing wrapper function "cel_carts"...
+		  cel_carts(ra,dec,vector)
+		Constructing wrapper function "ecl_carts"...
+		  ecl_carts(lambda,beta,vector)
+		Creating wrapper for Fortran function "vec_scalr"("vec_scalr")...
+		Constructing wrapper function "vec_scalr"...
+		  vec_scalr = vec_scalr(vector1,vector2)
+		Creating wrapper for Fortran function "vec_angle"("vec_angle")...
+		Constructing wrapper function "vec_angle"...
+		  vec_angle = vec_angle(vector1,vector2)
+		Constructing wrapper function "vec_prdct"...
+		  vec_prdct(vector1,vector2,vector3)
+		Constructing wrapper function "vec_renrm"...
+		  vec_renrm(vector)
+		Constructing wrapper function "dcd_arg"...
+		  dcd_arg(string_bn,names,types,prompts,values,status,[n_list])
+		Constructing wrapper function "da_explc"...
+		  da_explc(word1,len1,word2,len2,names,done,values,status,[n_list])
+		Constructing wrapper function "da_bypos"...
+		  da_bypos(word1,len1,done,values,status,[n_list])
+		Constructing wrapper function "da_fndwd"...
+		  da_fndwd(string_bn,len_bn,o_equal,l,status)
+		Constructing wrapper function "dcd_dthm"...
+		  dcd_dthm(string_bn,year,month,day,hh,mm,status)
+		Constructing wrapper function "dd_pckup"...
+		  dd_pckup(string_bn,k1,k2,number,status)
+		Constructing wrapper function "to_eclip"...
+		  to_eclip(ra,dec,jd,lambda,beta)
+		Constructing wrapper function "fm_eclip"...
+		  fm_eclip(lambda,beta,jd,ra,dec)
+		Constructing wrapper function "eqecl_ds"...
+		  eqecl_ds(djd,x,y,switch_bn,p,q)
+		Constructing wrapper function "getlun"...
+		  getlun(lun)
+		Creating wrapper for Fortran function "julian"("julian")...
+		Constructing wrapper function "julian"...
+		  julian = julian(year,month,day)
+		Creating wrapper for Fortran function "lentrim"("lentrim")...
+		Constructing wrapper function "lentrim"...
+		  lentrim = lentrim(string_bn)
+		Constructing wrapper function "set_nutate"...
+		  set_nutate(djd)
+		Constructing wrapper function "ark_prec"...
+		  ark_prec(alpha,delta,equinox,jd,p_alpha,p_delta)
+		Constructing wrapper function "prec_angles"...
+		  prec_angles(t,zeta,zed,theta)
+		Constructing wrapper function "threed_angles"...
+		  threed_angles(x,y,z,r_alpha,r_delta)
+		Constructing wrapper function "rd_astro"...
+		  rd_astro(in_line,code,value,flag)
+		Constructing wrapper function "rd_real"...
+		  rd_real(string_bn,value,flag)
+		Creating wrapper for Fortran function "sun_elong"("sun_elong")...
+		Constructing wrapper function "sun_elong"...
+		  sun_elong = sun_elong(jd)
+		Constructing wrapper function "sunsub"...
+		  sunsub(djd,lsn,rsn)
+		Constructing wrapper function "arkopn"...
+		  arkopn(iunit,dirname,file,filex,stat,pos,form,acces,irecl,flag)
+		Constructing wrapper function "unix_extend"...
+		  unix_extend(o_name,n_name,flag)
+		Constructing wrapper function "pwrite"...
+		  pwrite(string_bn)
+		Constructing wrapper function "pwritel"...
+		  pwritel(string_bn)
+		Constructing wrapper function "pwopen"...
+		  pwopen(name)
+		Constructing wrapper function "pwclos"...
+		  pwclos()
+		Constructing wrapper function "writen"...
+		  writen(string_bn)
+		Creating wrapper for Fortran function "addon"("addon")...
+		Constructing wrapper function "addon"...
+		  addon = addon(ifname,ext)
+		Constructing wrapper function "spawn"...
+		  spawn(cline)
+		Constructing wrapper function "arkgcl"...
+		  arkgcl(cbuf)
+		Constructing wrapper function "tvg_calc"...
+		  tvg_calc(cycle,termout,alpha,delta,intvls,totint)
+		Constructing wrapper function "tvg_init"...
+		  tvg_init(cycle,mid_jd)
+		Constructing wrapper function "upcase"...
+		  upcase(string_bn)
+		Constructing wrapper function "locase"...
+		  locase(string_bn)
+		Constructing wrapper function "viewf"...
+		  viewf()
+		Constructing wrapper function "wt_astro"...
+		  wt_astro(value,code,out_line,flag)
+		Constructing COMMON block support for "astro1"...
+		  d_psi,d_eps,rcp,rsp,height
+		Constructing COMMON block support for "pw_cmmn"...
+		  pw_lun,pw_open
+		Constructing COMMON block support for "tvg_bl"...
+		  c_elon,betas,jd
+		Constructing COMMON block support for "tvg_cs"...
+		  deg2rad,rad2deg
+		Constructing COMMON block support for "tvg_gm"...
+		  c1limit,c1gap,c2limit,edge,corner,gapx,gapy,locx,locy
+		Constructing COMMON block support for "tvg_ss"...
+		  sd_strng
+	Wrote C/API module "viewf" to file "/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c"
+	Fortran 77 wrappers are saved to "/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewf-f2pywrappers.f"
+  adding '/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/fortranobject.c' to sources.
+  adding '/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7' to include_dirs.
+copying /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/f2py/src/fortranobject.c -> /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7
+copying /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/f2py/src/fortranobject.h -> /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7
+  adding '/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewf-f2pywrappers.f' to sources.
+ - nothing done with h_files = ['perigee.inc', 'perigee_old.inc', 'tvguide.inc']
+build_src: building npy-pkg config files
+running build_ext
+new_compiler returns distutils.unixccompiler.UnixCCompiler
+customize UnixCCompiler
+customize UnixCCompiler using build_ext
+********************************************************************************
+distutils.unixccompiler.UnixCCompiler
+linker_exe    = ['gcc', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/']
+compiler_so   = ['gcc', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/', '-fno-strict-aliasing', '-g', '-O2', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes', '-fPIC']
+archiver      = ['ar', 'rc']
+preprocessor  = ['gcc', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/', '-E']
+linker_so     = ['gcc', '-pthread', '-shared', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-L/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib', '-Wl,-rpath=/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib', '-Wl,--no-as-needed', '-Wl,--sysroot=/']
+compiler_cxx  = ['g++', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/']
+ranlib        = None
+compiler      = ['gcc', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/', '-fno-strict-aliasing', '-g', '-O2', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes']
+libraries     = []
+library_dirs  = ['/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib']
+include_dirs  = ['/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7']
+********************************************************************************
+customize Gnu95FCompiler
+find_executable('gfortran')
+Found executable /usr/bin/gfortran
+exec_command(['/usr/bin/gfortran', '-dumpversion'],)
+Retaining cwd: /web_chroot/.www_mountpnt2/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/bin/gfortran -dumpversion ; echo $? > /tmp/tmpAtz_pO/qzp6bk ) > /tmp/tmpAtz_pO/qxeoo9 2>&1')
+_update_environment(...)
+exec_command(['/usr/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /web_chroot/.www_mountpnt2/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /tmp/tmpAtz_pO/IaKZRB ) > /tmp/tmpAtz_pO/8QWPgy 2>&1')
+_update_environment(...)
+customize Gnu95FCompiler
+exec_command(['/usr/bin/gfortran', '-dumpversion'],)
+Retaining cwd: /web_chroot/.www_mountpnt2/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/bin/gfortran -dumpversion ; echo $? > /tmp/tmpAtz_pO/8Ta9dK ) > /tmp/tmpAtz_pO/rMHiMV 2>&1')
+_update_environment(...)
+exec_command(['/usr/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /web_chroot/.www_mountpnt2/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /tmp/tmpAtz_pO/f2pLV_ ) > /tmp/tmpAtz_pO/qhLLLE 2>&1')
+_update_environment(...)
+customize Gnu95FCompiler using build_ext
+********************************************************************************
+numpy.distutils.fcompiler.gnu.Gnu95FCompiler
+version_cmd     = ['/usr/bin/gfortran', '-dumpversion']
+compiler_fix    = ['/usr/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-Wall', '-g', '-fno-second-underscore', '-fPIC', '-O3', '-funroll-loops']
+ranlib          = ['/usr/bin/gfortran']
+linker_exe      = ['/usr/bin/gfortran', '-Wall', '-Wall']
+archiver        = ['/usr/bin/gfortran', '-cr']
+compiler_f77    = ['/usr/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-fPIC', '-O3', '-funroll-loops']
+linker_so       = ['/usr/bin/gfortran', '-Wall', '-g', '-Wall', '-g', '-shared']
+compiler_f90    = ['/usr/bin/gfortran', '-Wall', '-g', '-fno-second-underscore', '-fPIC', '-O3', '-funroll-loops']
+version         = LooseVersion ('4.4.7')
+libraries       = ['gfortran']
+library_dirs    = ['/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib']
+object_switch   = '-o '
+compile_switch  = '-c'
+include_dirs    = ['/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7']
+********************************************************************************
+building 'viewf' extension
+compiling C sources
+C compiler: gcc -pthread -B /usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat -Wl,--sysroot=/ -fno-strict-aliasing -g -O2 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC
+
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build
+creating /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7
+compile options: '-I/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7 -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7 -c'
+gcc: /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c
+exec_command(['gcc', '-pthread', '-B', '/usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat', '-Wl,--sysroot=/', '-fno-strict-aliasing', '-g', '-O2', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes', '-fPIC', '-I/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7', '-I/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include', '-I/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7', '-c', '/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c', '-o', '/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.o'],)
+Retaining cwd: /web_chroot/.www_mountpnt2/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( gcc -pthread -B /usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat -Wl,--sysroot=/ -fno-strict-aliasing -g -O2 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC -I/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7 -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7 -c /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c -o /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.o ; echo $? > /tmp/tmpAtz_pO/fzieXv ) 2>&1 | tee /tmp/tmpAtz_pO/n6ifod ')
+In file included from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/ndarraytypes.h:1777,
+                 from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/ndarrayobject.h:18,
+                 from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h:4,
+                 from /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/fortranobject.h:13,
+                 from /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:19:
+/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: #warning "Using deprecated NumPy API, disable it by " "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION"
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:440:2: error: invalid preprocessing directive #declfortranroutine
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:4854: error: expected declaration specifiers or ‘...’ before ‘(’ token
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:5182:2: error: invalid preprocessing directive #routine_def
+_update_environment(...)
+In file included from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/ndarraytypes.h:1777,
+                 from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/ndarrayobject.h:18,
+                 from /usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h:4,
+                 from /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/fortranobject.h:13,
+                 from /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:19:
+/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: #warning "Using deprecated NumPy API, disable it by " "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION"
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:440:2: error: invalid preprocessing directive #declfortranroutine
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:4854: error: expected declaration specifiers or ‘...’ before ‘(’ token
+/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c:5182:2: error: invalid preprocessing directive #routine_def
+error: Command "gcc -pthread -B /usr1/local/anaconda/anaconda-4.0.0-x86_64/compiler_compat -Wl,--sysroot=/ -fno-strict-aliasing -g -O2 -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC -I/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7 -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/lib/python2.7/site-packages/numpy/core/include -I/usr1/local/anaconda/anaconda-4.0.0-x86_64/include/python2.7 -c /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.c -o /www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/www/htdocs/cgi-bin/tess/webtess.dev/tvguide2/build/src.linux-x86_64-2.7/viewfmodule.o" failed with exit status 1

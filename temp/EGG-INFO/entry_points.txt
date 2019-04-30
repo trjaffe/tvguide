@@ -1,0 +1,3 @@
+[console_scripts]
+tvguide = tvguide:tvguide_main
+

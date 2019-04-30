@@ -1,0 +1,20 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module viewf ! in 
+    interface  ! in :viewf
+        subroutine viewf(intvls,alpha,delta) ! in :viewf:view.f
+            integer dimension(26),intent(out) :: intvls
+            double precision intent(in) :: alpha
+            double precision intent(in) :: delta
+        end subroutine viewf
+        subroutine viewdate(cycle,sector,date) ! in :viewf:view.f
+            integer intent(in) :: cycle
+            integer intent(in) :: sector
+            character*26 intent(out) :: date
+        end subroutine viewdate
+    end interface 
+end python module viewf
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/
