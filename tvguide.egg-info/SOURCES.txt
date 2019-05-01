@@ -21,6 +21,7 @@ ftvguide/view.f
 ftvguide/wt_astro.f
 tvguide/__init__.py
 tvguide/command_line.py
+tvguide/coordconvert.py
 tvguide/tvguide.py
 tvguide.egg-info/PKG-INFO
 tvguide.egg-info/SOURCES.txt

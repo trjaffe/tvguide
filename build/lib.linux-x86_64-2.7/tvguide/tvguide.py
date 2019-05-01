@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # ^ needed for special degree character parsing
-
+import re,os,io,sys
 import numpy as np
 from viewf import viewf, viewdate
+from . import coordconvert
 
-
+debug=True
 
 class Namespace:
     """  Namespace to mimic args passed to Fortran wrapper view()
@@ -92,7 +93,7 @@ def summarize_html( observations, sectors, cameras, ncycle=0):
     print("<td>Number of sources not observed:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format( len([o for o in observations if o == 0]) , 100.*float(len([o for o in observations if o == 0]))/float(num) ))
 
     for s in range(1,14):
-        print("<td>Number of sources observed in Sector {:d}:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format(s+ncycle*13, sectors[s-1]))
+        print("<td>Number of sources observed in Sector {:d}:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format(s+ncycle*13, sectors[s-1], 100*sectors[s-1]/float(num)))
     for c in range(1,5):
         print("<td>Number of sources observed in Camera {:d} </td><td>  {:d} </td><td> - </td></tr>".format(c, cameras[c-1] ))
 
@@ -103,33 +104,12 @@ def summarize_html( observations, sectors, cameras, ncycle=0):
 
 
 
-def summarize( observations, sectors, cameras, ncycle=0):
+def summarize_simple( observations, sectors, cameras, ncycle=0):
     """Prints summary stats for screen output
     
     TBD  Add string formatting into columns on-screen
     """
-    num=len(observations)
-
-    print('<div><table class="table-condensed"><tr><th>Summary</th><th>number</th><th>fraction</th></tr>\n'.format(num))
-
-    print("<td>Number of sources with at least 1 observation:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format( len([o for o in observations if o > 0]) , 100.*float(len([o for o in observations if o > 0]))/float(num)) )
-
-    print("<td>Number of sources with at least 2 observations:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format( len([o for o in observations if o > 1]) , 100.*float(len([o for o in observations if o > 1]))/float(num)) )
-
-    print("<td>Number of sources not observed:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format( len([o for o in observations if o == 0]) , 100.*float(len([o for o in observations if o == 0]))/float(num) ))
-
-    for s in range(1,14):
-        print("<td>Number of sources observed in Sector {:d}:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format(s+ncycle*13, sectors[s-1]))
-    for c in range(1,5):
-        print("<td>Number of sources observed in Camera {:d} </td><td>  {:d} </td><td> - </td></tr>".format(c, cameras[c-1] ))
-
-       
-    print("</table>")
-    print("<p>(Feel free to write to the helpdesk to suggest other useful stats!)</p>\n")
-    print("</div>")
-
-
-
+    pass
 
 
 
@@ -142,12 +122,13 @@ def summarize_list(stats,ncycle=0):
     num=stats.shape[0]
     
     observations=[len([s for s in stats[row,2:15] if s > 0]) for row in range(num)]
-    sectors=np.zeros(13,type=int)
-    cameras=np.zeros(5)
-
+    sectors=np.zeros(13,dtype=int)
+    cameras=np.zeros(5,dtype=int)
+    if debug: print("DEBUGGING:  in summarize_list about to set sector data")
     for s in range(1,14):
-        sectors[s-1]=len([c for c in stats[:,s+1] if c > 0]), 100.*float(len([c for c in stats[:,s+1] if c > 0]))/float(num) 
+        sectors[s-1]=len([c for c in stats[:,s+1] if c > 0])
 
+    if debug: print("DEBUGGING:  in summarize_list about to count cameras")
     ## Count how many sources are observed in each camera.
     for c in range(1,5):
         cameras[c-1]=sum([1 for r in range(0,num) if c in stats[r,2:-1] ])
@@ -167,6 +148,7 @@ def parse_input(fileitem):
     assert fileitem is not None
     if debug:  print("<p>DEBUGGING: got into parse_input() with fileitem is %s</p>"%fileitem)
     if debug and fileitem.value:  print("<p>DEBUGGING: got into parse_input() with fileitem.value</p>")
+
     try:
         if not hasattr(fileitem,'file') and type(fileitem) is str:
             # Given a file on disk for testing
@@ -176,10 +158,10 @@ def parse_input(fileitem):
                 exit(1)
             inra,indec=parse_file(fileitem,exit_on_error=False)
         elif fileitem.value:  
-            from io import cStringIO
+            import StringIO
             #  Given through POST data?  
             if debug:  print("<p>DEBUGGING:  fileitem has key 'file' in parse_file, trying to parse it as a string</p>")
-            inra,indec=parse_file(cStringIO.StringIO(fileitem.value),exit_on_error=False)
+            inra,indec=parse_file(StringIO.StringIO(fileitem.value),exit_on_error=False)
         else:
             #  Given a file-like object from the cgi FieldStorage
             if debug:  print("<p>DEBUGGING:  fileitem is NOT str, assuming an opened object, calling fileitem.file.readline()</p>")
@@ -320,9 +302,6 @@ def parse_coord(incoord,hours=False):
 
 
 
-
-
-
 def parse_NameRaDec(entry):
     if debug:  print("<p>DEBUGGING:  got into parse_NameRaDec('%s')</p>"%entry)
     degpat='^\s*[-+]?\d+\.?[dD]'
@@ -335,20 +314,20 @@ def parse_NameRaDec(entry):
         if deg.encode('utf-8') in entry:  print("<p>DEBUGGING:  Found a degree symbol in entry</p>")
         else: print("<p>DEBUGGING:  Did NOT find a degree symbol in entry</p>")
 
-    comsep=re.split('\s*,\s*',safe_input(entry,type='entry'))
+    comsep=re.split('\s*,\s*',entry)
     if len(comsep) == 1:
         if debug:  print("<p>DEBUGGING:  splits into only one field, '%s'</p>"%comsep)
         if re.match('^\s*\d+\s*$',comsep[0]):
             if debug:  print("<p>DEBUGGING: this field is all digits;  trying as a TIC ID</p>")
             try:
-                return ticid2radec(safe_input(comsep[0],type='int'))
+                return ticid2radec(comsep[0])
             except Exception as e:
                 print("<p>ERROR:  Problem calling ticid2radec():  {}</p>".format(e))
                 raise
         else:
             if debug:  print("<p>DEBUGGING: this field is NOT all digits, so trying the name resolver</p>")
             try:
-                return name_resolver(safe_input(entry,type='name'))
+                return name_resolver(entry)
             except Exception as e:
                 print("<p>ERROR:  Problem calling name_resolver():  %s</p>"%(e))
                 return entry, None, None
@@ -567,6 +546,7 @@ def try_simbad_ned(entry,simbad=False,ned=False):
         print(os.listdir(homedir))
 
     try:
+        import shutil
         shutil.rmtree(os.path.join(os.environ['HOME'],'.astropy'))
     except Exception as e2:
         print("<p><font color=red>ERROR: got exception %s trying to clean up astroquery cache, with message:  '%s'</font></p>"%(e2.__class__.__name__,e2))
@@ -584,11 +564,13 @@ def tvguide_main():
     parser.add_argument("--infile",type=str,default=None,help="Input a csv file of sources")
     parser.add_argument("--outfile",type=str,default=None,help="Output a csv file of sources")
 
-    if source is None and infile is None:
-        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be a name (e.g., 'Cyg X-1'), a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), or a TIC ID (e.g., '268644785').\n")
+    args = parser.parse_args()
+
+    if args.source is None and args.infile is None:
+        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be\n  - a name (e.g., 'Cyg X-1'), \n  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), \n  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), \n  - or a TIC ID (e.g., '268644785').\n")
 
 
-    elif source is not None:
+    elif args.source is not None:
         inName, inRA, inDEC = parse_NameRaDec(source)
         args=Namespace(ra=[float(inRA)],dec=[float(inDEC)])
         try:
