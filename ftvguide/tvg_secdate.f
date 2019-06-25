@@ -26,12 +26,13 @@
 *-TVG_SECDATE
 
 *       There are 13 sectors per cycle
-	integer n_cycle, n_sect
+	integer n_cycle, m_sect
 	parameter( n_cycle = 2 )
-        parameter( n_sect = 13 )
+        parameter( m_sect = 13 )
 
-	character*26 sd_strng( n_cycle, n_sect )
-        common / TVG_SS / sd_strng
+	integer n_sects( n_cycle )
+	character*26 sd_strng( n_cycle, m_sect )
+        common / TVG_SS / n_sects, sd_strng
 
         out_strng = sd_strng( cycle, sector )
 

@@ -38,6 +38,53 @@
 
         end
 
+*+CARTS_CEL
+        subroutine CARTS_CEL( vector, ra, dec )
+
+        implicit none
+
+        double precision vector( 3 )
+        double precision ra, dec
+  
+*       Description:
+*         Given a 3-d vector, returns RA and Dec
+*
+*       Arguments:
+*         vector    (i) : input 3-d vector
+*         ra        (o) : output RA (decimal hours)
+*         dec       (o) : output Dec
+*
+*       Origin:
+*         Conceived as a part of the 3-d vector routines
+*
+*       Author:
+*         Koji Mukai, 1993 Mar 15, Original version
+*-CARTS_CEL
+
+        double precision cos_dec, ra_rad, dec_rad
+
+        double precision pi, deg2rad, rad2deg
+        common / TVG_CS / pi, deg2rad, rad2deg
+
+	dec = asin( vector( 3 ) ) * rad2deg
+	if( vector( 1 ) .eq. 0.0d+00 ) then
+          if( vector( 2 ) .gt. 0.0d+00 ) then
+            ra = 6.0d+00
+	  else
+            ra = 18.0d+00
+	  end if
+	else if( vector( 1 ) .gt. 0.0 ) then
+	  ra = atan( vector( 2 ) / vector( 1 ) ) * rad2deg / 15.0d+00
+        else
+	  ra = atan( vector( 2 ) / vector( 1 ) ) * rad2deg / 15.0d+00
+     &                                                     + 12.0d+00
+	end if
+	if( ra .lt. 0.0d+00 ) then
+	  ra = ra + 24.0d+00
+	end if
+
+        end
+
 *+ECL_CARTS
         subroutine ECL_CARTS( lambda, beta, vector )
 
@@ -252,3 +299,136 @@
         end do
 
         end
+
+
+*+VEC_FNDIR
+        subroutine VEC_FNDIR( pos, dir, dir_ )
+
+	implicit none
+
+	double precision pos( 3 ), dir( 3 ), dir_( 3 )
+	
+*       Description:
+*         Given a generic direction dir, find the vector dir_ that is
+*         tangential to the unit sphere at position pos
+*
+*       Arguments:
+*         pos   (i) : Cartesian position to be rotated
+*         dir   (i) : Cartesian vector - local direction
+*         dir_  (o) : Direction vector after twist
+*
+*       Dependencies:
+*         None
+*
+*       Origin:
+*         Conceived as a part of the 3-d vector routines
+*
+*       Author:
+*         Koji Mukai, 2019 June 14, original version
+*-VEC_FNDIR
+
+	double precision third( 3 )
+
+	call VEC_PRDCT( pos, dir, third )
+	call VEC_RENRM( third )
+	call VEC_PRDCT( third, pos, dir_ )
+	call VEC_RENRM( dir_ )
+
+	end
+
+
+*+VEC_TWIST
+        subroutine VEC_TWIST( pos, dir, angle, dir_ )
+
+	implicit none
+
+	double precision pos( 3 ), dir( 3 )
+	double precision angle
+	double precision dir_( 3 )
+	
+*       Description:
+*         Rotates the position vector "pos" in the direction "dir" by
+*         angle "angle" to arrive at "pos_"; "dir_" is the direction
+*         vector at "
+*
+*       Arguments:
+*         pos   (i) : Cartesian position to be rotated
+*         dir   (i) : Cartesian vector - local direction
+*         angle (i) : Scaler - angle (deg) to be twisted
+*         dir_  (o) : Direction vector after twist
+*
+*       Dependencies:
+*         None
+*
+*       Origin:
+*         Conceived as a part of the 3-d vector routines
+*
+*       Author:
+*         Koji Mukai, 2019 June 14, original version
+*-VEC_TWIST
+
+	double precision third( 3 )
+	double precision cosan, sinan
+	integer k
+	
+        double precision pi, deg2rad, rad2deg
+        common / TVG_CS / pi, deg2rad, rad2deg
+
+	call VEC_PRDCT( pos, dir, third )
+	cosan = cos( angle * deg2rad )
+	sinan = sin( angle * deg2rad )
+	do k = 1, 3
+	  dir_( k ) = cosan * dir( k ) + sinan * third( k )
+	end do
+	call VEC_RENRM( dir_ )
+
+	end
+
+*+VEC_ROTAT
+        subroutine VEC_ROTAT( pos, dir, angle, pos_, dir_ )
+
+        implicit none
+
+        double precision pos( 3 ), dir( 3 )
+	double precision angle
+	double precision pos_( 3 ), dir_( 3 )
+
+*       Description:
+*         Rotates the position vector "pos" in the direction "dir" by
+*         angle "angle" to arrive at "pos_"; "dir_" is the direction
+*         vector at "
+*
+*       Arguments:
+*         pos   (i) : Cartesian position to be rotated
+*         dir   (i) : Cartesian vector - the direction of rotation;
+*                     assumed to be perpendicular to pos
+*         angle (i) : Scaler - angle (deg) to be rotated
+*         pos_  (o) : Position vector after rotation
+*         dir_  (o) : Direction vector after rotation
+*
+*       Dependencies:
+*         None
+*
+*       Origin:
+*         Conceived as a part of the 3-d vector routines
+*
+*       Author:
+*         Koji Mukai, 2019 June 14, original version
+*-VEC_ROTAT
+
+	double precision cosan, sinan
+	integer k
+	
+        double precision pi, deg2rad, rad2deg
+        common / TVG_CS / pi, deg2rad, rad2deg
+
+	cosan = cos( angle * deg2rad )
+	sinan = sin( angle * deg2rad )
+	do k = 1, 3
+	  pos_( k ) = cosan * pos( k ) + sinan * dir( k )
+	  dir_( k ) = -sinan * pos( k ) + cosan * dir( k )
+	end do
+	call VEC_RENRM( pos_ )
+	call VEC_RENRM( dir_ )
+
+	end

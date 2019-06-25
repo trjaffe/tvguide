@@ -29,10 +29,10 @@
 *-TVG_INIT
 
 *       There are 13 sectors per cycle
-        integer n_cycle, n_sect, n_camera
+        integer n_cycle, m_sect, n_camera
         double precision oneeighty, sixty, twentyfour, two, half, zero
 	parameter( n_cycle = 2 )
-        parameter( n_sect = 13 )
+        parameter( m_sect = 13 )
 	parameter( n_camera = 4 )
         parameter( oneeighty = 1.80d+02 )
         parameter( sixty = 6.0d+01 )
@@ -41,26 +41,30 @@
         parameter( half = 5.0d-01 )
         parameter( zero = 0.0d-00 )
 
-	character*17 pg_strng( n_cycle, n_sect + 1 )
+	character*17 pg_strng( n_cycle, 0: m_sect )
         integer year, month, day, hh, mm, status, j, n_c
-        double precision pg_jd( n_sect + 1 )
+        double precision pg_jd( 0: m_sect )
 	double precision mid_jd, jd_date, dphh, sun_elon
+	double precision al, del, pal, pdel, beta
 	integer JULIAN
 	double precision SUN_ELONG
 
-	double precision c_elon( n_cycle, n_sect )
-	double precision betas( n_cycle, 4 )
+	integer n_sects( n_cycle )
+	character*26 sd_strng( n_cycle, m_sect )
+	double precision c_elon( n_cycle, m_sect )
+	double precision d_beta( n_camera )
+	double precision f_beta( n_cycle, m_sect )
+	double precision d2c4( n_cycle, m_sect )
 	double precision jd2000, jds( n_cycle )
 	double precision c1limit, c1gap, c2limit, c2gap
 	double precision edge, corner, gapx, gapy
-	double precision locx( 3 ), locy( 3 )
+	double precision orgnorth( 3 )
 	double precision pi, deg2rad, rad2deg
-	character*26 sd_strng( n_cycle, n_sect )
-	common / TVG_BL / c_elon, betas, jd2000, jds
+        common / TVG_SS / n_sects, sd_strng
+	common / TVG_BL / c_elon, d_beta, f_beta, d2c4, jd2000, jds
 	common / TVG_GM / c1limit, c1gap, c2limit, c2gap,
-     &                           edge, corner, gapx, gapy, locx, locy
+     &                                edge, corner, gapx, gapy, orgnorth
         common / TVG_CS / pi, deg2rad, rad2deg
-        common / TVG_SS / sd_strng
 
 	include 'tvguide.inc'
 
@@ -68,13 +72,12 @@
         deg2rad = 1.74532925199432954737168d-02
 	rad2deg = 1.0d+00 / deg2rad
         jd2000 = dble( JULIAN( 2000, 1, 1 ) ) - 0.5D+00
-	locx( 1 ) = 0.0d+00
-	locx( 2 ) = 1.0d+00
-	locx( 3 ) = 0.0d+00
-	locy( 2 ) = 0.0d+00
+	orgnorth( 1 ) = 0.0d+00
+	orgnorth( 2 ) = 0.0d+00
+	orgnorth( 3 ) = 1.0d+00
 
         do cycle = 1, n_cycle
-          do j = 1, n_sect + 1
+          do j = 0, n_sects( cycle )
             call DCD_DTHM( pg_strng( cycle, j ),
      &                                year, month, day, hh, mm, status )
             if( status .ne. 0 ) then
@@ -86,11 +89,15 @@
             pg_jd( j ) = jd_date + dphh / twentyfour
 	  end do
 
-          do j = 1, n_sect
-            mid_jd = ( pg_jd( j ) + pg_jd( j + 1 ) ) * half
-*           For now, apply the 5-hr offset to all sectors in Cycle 1	  
-	    mid_jd = mid_jd - 5.0d+00 / twentyfour
+          do j = 1, n_sects( cycle )
+            mid_jd = ( pg_jd( j - 1 ) + pg_jd( j ) ) * half
+*           For now, apply the 5-hr offset to all sectors in Cycle 1
+c	    mid_jd = mid_jd - 5.0d+00 / twentyfour
+c	    mid_jd = mid_jd - 6.4d+00 / twentyfour
             sun_elon = SUN_ELONG( mid_jd )
+	    call FM_ECLIP( sun_elon, zero, jd2000, al, del )
+	    call ARK_PREC( al, del, 2.019d+03, jd2000, pal, pdel )
+	    call TO_ECLIP( pal, pdel, jd2000, sun_elon, beta )
             if( sun_elon .gt. oneeighty ) then
               c_elon( cycle, j ) = sun_elon - oneeighty
             else
@@ -99,11 +106,12 @@
 c            call FM_ECLIP( c_elon( cycle, j ), zero, mid_jd, ra, dec )
           end do
 
-          do j = 1, n_sect
-            sd_strng( cycle, j ) = pg_strng( cycle, j )( :11 ) // ' to '
-     &                                // pg_strng( cycle, j + 1 )( :11 )
+          do j = 1, n_sects( cycle )
+            sd_strng( cycle, j ) = pg_strng( cycle, j - 1 )( :11 )
+     &                          // ' to ' // pg_strng( cycle, j )( :11 )
           end do
-          jds( cycle ) = ( pg_jd( 1 ) + pg_jd( 14 ) ) * half
+          jds( cycle ) = ( pg_jd( 0 ) + pg_jd( n_sects( cycle ) ) )
+     &                                                            * half
 
 	end do
 

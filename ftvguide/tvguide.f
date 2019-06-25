@@ -8,10 +8,10 @@
 
 *-TVGUIDE
 
-        integer n_sect, n_cycle, n_camera, n_opt
+        integer m_sect, n_cycle, n_camera, n_opt
         character*12 v_string
 *       There are 13 sectors per cycle
-        parameter( n_sect = 13 )
+        parameter( m_sect = 13 )
 *       There are 2 cycles recognized by this version of TVGUIDE
         parameter( n_cycle = 2 )
 *       There are 4 cameras on-board TESS
@@ -39,17 +39,20 @@
         integer JULIAN, LENTRIM
         character*3 MN_NAME
 
-	double precision c_elon( n_sect )
-	double precision betas( n_cycle, n_camera )
+        integer n_sects( n_cycle )
+	character*26 sd_strng( n_cycle, m_sect )
+	double precision c_elon( m_sect )
+	double precision d_beta( n_camera )
+	double precision f_beta( n_cycle, m_sect )
+	double precision d2c4( n_cycle, m_sect )
 	double precision jd2000, jds( n_cycle )
 	double precision c1limit, c1gap, c2limit, c2gap
 	double precision edge, corner, gapx, gapy
-	double precision locx( 3 ), locy( 3 )
-	character*26 sd_strng( n_cycle, n_sect )
-	common / TVG_BL / c_elon, betas, jd2000, jds
+	double precision orgnorth( 3 )
+        common / TVG_SS / n_sects, sd_strng
+	common / TVG_BL / c_elon, d_beta, f_beta, d2c4, jd2000, jds
 	common / TVG_GM / c1limit, c1gap, c2limit, c2gap,
-     &                           edge, corner, gapx, gapy, locx, locy
-        common / TVG_SS / sd_strng
+     &                                edge, corner, gapx, gapy, orgnorth
 
         character*16 names( n_opt )
         integer types( n_opt )

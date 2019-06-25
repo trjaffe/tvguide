@@ -4,9 +4,9 @@
 
         implicit none
 	
-        integer n_cycle, n_sect, n_camera
+        integer n_cycle, m_sect, n_camera
 	parameter( n_cycle = 2 )
-        parameter( n_sect = 13 )
+        parameter( m_sect = 13 )
 	parameter( n_camera = 4 )
 
 	logical termout
@@ -40,26 +40,31 @@
 	logical dothis( n_cycle )
         integer cycle, off_sect
         integer i, j, jj, k
-	double precision lambda, beta, lambda0, lambda_
+	double precision lambda, beta, lambda0, beta0, twist, shift
 	double precision d2000, alpnow, dltnow
-	double precision offset, cosoff, beta0, locxang, locyang
+	double precision offset, cosoff, locxang, locyang
 	double precision offsetx, offsety
 	double precision targt( 3 ), cc( 3 ), tgt_cc( 3 )
+	double precision sfov( 3 ), temp( 3 ), cfov( 3 ), cnorth( 3 )
+	double precision ccnorth( 3 ), cceast( 3 )
 	double precision VEC_ANGLE
-	
-	double precision c_elon( n_cycle, n_sect )
-	double precision betas( n_cycle, n_camera )
+
+        integer n_sects( n_cycle )
+	character*26 sd_strng( n_cycle, m_sect )
+	double precision c_elon( n_cycle, m_sect )
+	double precision d_beta( n_camera )
+	double precision f_beta( n_cycle, m_sect )
+	double precision d2c4( n_cycle, m_sect )
 	double precision jd2000, jds( n_cycle )
 	double precision c1limit, c1gap, c2limit, c2gap
 	double precision edge, corner, gapx, gapy
-	double precision locx( 3 ), locy( 3 )
+	double precision orgnorth( 3 )
 	double precision pi, deg2rad, rad2deg
-	character*26 sd_strng( n_cycle, n_sect )
-	common / TVG_BL / c_elon, betas, jd2000, jds
+        common / TVG_SS / n_sects, sd_strng
+	common / TVG_BL / c_elon, d_beta, f_beta, d2c4, jd2000, jds
 	common / TVG_GM / c1limit, c1gap, c2limit, c2gap,
-     &                           edge, corner, gapx, gapy, locx, locy
+     &                                edge, corner, gapx, gapy, orgnorth
         common / TVG_CS / pi, deg2rad, rad2deg
-        common / TVG_SS / sd_strng
 
 	d2000 = 2.0d+03
 *       Find the ecliptic latitude, draw some conclusions from that
@@ -114,39 +119,48 @@ c       call TO_ECLIP( alpnow, dltnow, jds( cycle ), lambda, beta )
           end if
 	end if
 
+        call ECL_CARTS( lambda, beta, targt )
         totint = 0
+	off_sect = 0
 	do cycle = 1, n_cycle
-	  off_sect = n_sect * ( cycle - 1 )
-          do j = 1, n_sect
+          do j = 1, n_sects( cycle )
 	    jj = off_sect + j
 	    intvls( jj ) = 0
 	    flags( jj ) = 0
 	  end do
 	  if( dothis( cycle ) ) then
 *           Try with 13 sectors starting with ecliptic longitude L0+delta
-            do j = 1, n_sect
+            do j = 1, n_sects( cycle )
 	      jj = off_sect + j
+c	      find sector fov center
               lambda0 = c_elon( cycle, j )
-              lambda_ = lambda - lambda0
-	      call ECL_CARTS( lambda_, beta, targt )
+	      beta0 = f_beta( cycle, j )
+	      twist = d2c4( cycle, j )
+	      call ECL_CARTS( lambda0, beta0, sfov )
+c              lambda_ = lambda - lambda0
+              call VEC_FNDIR( sfov, orgnorth, temp )
+              call VEC_TWIST( sfov, temp, twist, cnorth )
+c	      call ECL_CARTS( lambda_, beta, targt )
 	      do k = 1, n_camera
-	        call ECL_CARTS( 0.0d+00, betas( cycle, k ), cc )
-
-	        offset = VEC_ANGLE( targt, cc )
+	        shift = d_beta( k )
+                call VEC_ROTAT( sfov, cnorth, shift, cfov, ccnorth )
+c	        call VEC_PRDCT( cfov, ccnorth, cceast )
+	        call VEC_PRDCT( ccnorth, cfov, cceast )
+	        offset = VEC_ANGLE( targt, cfov )
 	        cosoff = cos( offset * deg2rad )
 	        if( offset .le. corner ) then
 	          do i = 1, 3
-	            tgt_cc( i ) = targt( i ) / cosoff - cc( i )
+	            tgt_cc( i ) = targt( i ) / cosoff - cfov( i )
 	          end do
 * 	          Get the angle between cc and targt
 *	          but what I really care is the angle between tgt_cc
 *	          projected along locx/locy an
                   call VEC_RENRM( tgt_cc )
-	          beta0 = betas( cycle, k ) * deg2rad
-	          locy( 1 ) = -sin( beta0 )
-	          locy( 3 ) = cos( beta0 )
-	          locxang = VEC_ANGLE( tgt_cc, locx ) * deg2rad
-	          locyang = VEC_ANGLE( tgt_cc, locy )
+c	          beta0 = betas( cycle, k ) * deg2rad
+c	          locy( 1 ) = -sin( beta0 )
+c	          locy( 3 ) = cos( beta0 )
+	          locxang = VEC_ANGLE( tgt_cc, cceast ) * deg2rad
+	          locyang = VEC_ANGLE( tgt_cc, ccnorth )
                   offsetx = offset * cos( locxang )
 	          if( locyang .le. 90.0 ) then
 	            offsety = offset * sin( locxang )
@@ -176,6 +190,7 @@ c       call TO_ECLIP( alpnow, dltnow, jds( cycle ), lambda, beta )
               end do
             end do
           end if
+	  off_sect = off_sect + n_sects( cycle )
 	end do
 	
         end
