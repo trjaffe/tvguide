@@ -3,7 +3,7 @@
 import re,os,io,sys
 import numpy as np
 from viewf import viewf, viewdate
-from . import coordconvert
+from .coordconvert import *
 
 debug=False
 
@@ -29,7 +29,7 @@ def view(ra_deg, dec_deg,quiet=True):
     except Exception as e: 
         print("ERROR:  could not call viewf():  {}.  ".format(e))
 
-    num_cycles = len(full_out)/13
+    num_cycles = int(len(full_out)/13)
     if debug:
         print("<p>DEBUGGING:  got back {} sectors, so assuming {} cycles.</p>".format(len(full_out),num_cycles))
 
@@ -40,7 +40,7 @@ def view(ra_deg, dec_deg,quiet=True):
         if not quiet:
             for i,f in enumerate(out):
                 try:
-                    datestr=viewdate(cycle, i+1)
+                    datestr=viewdate(cycle, i+1).decode()
                 except Exception as e: 
                     print("<p>ERROR:  could not call viewdate():  {}.  ".format(e))
 
@@ -73,7 +73,7 @@ def get_sector_dates(cycle=1):
     x=view(0.0,0.0,1)
     dates=[]
     for i in range(13):
-        dates.append( viewdate(cycle,i+1) )
+        dates.append( viewdate(cycle,i+1).decode() )
     return dates
 
 
@@ -146,7 +146,7 @@ def parse_input(fileitem):
 
     """
     assert fileitem is not None
-    if debug:  print("<p>DEBUGGING: got into parse_input() with fileitem is %s</p>"%fileitem)
+    if debug:  print("<p>DEBUGGING: got into parse_input() with fileitem is {}</p>".format(fileitem))
     if debug and fileitem.value:  print("<p>DEBUGGING: got into parse_input() with fileitem.value</p>")
 
     try:
@@ -154,7 +154,7 @@ def parse_input(fileitem):
             # Given a file on disk for testing
             if debug:  print("<p>DEBUGGING:  fileitem is str, calling tvguide's parse_file</p>")
             if not os.path.isfile(fileitem):
-                print("ERROR:  cannot find fileitem '%s'"%fileitem)
+                print("ERROR:  cannot find fileitem '{}'".format(fileitem))
                 exit(1)
             inra,indec=parse_file(fileitem,exit_on_error=False)
         elif fileitem.value:  
@@ -170,14 +170,14 @@ def parse_input(fileitem):
             # reset it to the beginning after reading the first line, otherwise parse_file() will be missing it!
             fileitem.file.seek(0) 
             if '\r' in first or '\r' in second:
-                if debug:  print("<p>DEBUGGING: Found '\\r' in first='%s';  calling reline_input. </p>"%first)
+                if debug:  print("<p>DEBUGGING: Found '\\r' in first='{}';  calling reline_input. </p>".format(first))
                 inra,indec=reline_input(fileitem.file)
             else:
                 inra,indec=parse_file(fileitem.file,exit_on_error=False)
                 inra=inra.tolist()
                 indec=indec.tolist()
     except Exception as e:
-        print("<p><font color=red>Problem reading file</font>:  Exception %s</p>"%e)
+        print("<p><font color=red>Problem reading file</font>:  Exception {}</p>".format(e))
 
     ra=np.zeros(len(inra))
     dec=np.zeros(len(indec))
@@ -235,7 +235,6 @@ def parse_file(infile, exit_on_error=True):
 
 
 def csv_header():
-    from webtess import get_sector_dates
     cycles=[1,2]
     header=""
     for cycle in cycles:
@@ -262,7 +261,7 @@ def parse_coord(incoord,hours=False):
     #  in between.  Only worry is special characters like degrees
     #  that could get pasted into the form and turned into something numeric.  
     #
-    from coordconvert import ra2decimal, dec2decimal
+    #from coordconvert import ra2decimal, dec2decimal
 
     pattern=r"^[\d\s\+-\.hms]*$"
     if not re.match(pattern ,incoord):
@@ -273,50 +272,50 @@ def parse_coord(incoord,hours=False):
     pattern=re.compile(r"[\+-]?(?:\d+(?:\.\d*)?|\d\d+)")
 
     wsplit=pattern.findall(incoord)
-    if debug:  print("<p>DEBUGGING:  got wsplit=%s from incoord='%s'</p>"%(wsplit,incoord))
+    if debug:  print("<p>DEBUGGING:  got wsplit={} from incoord='{}'</p>".format(wsplit,incoord))
     #  h m s.s  or h m.m if hours=True
     #  d m s.s  or d m.m if hours=False
 
     try:
         if len(wsplit) == 1 and not hours:
-            if debug:  print("<p>DEBUGGING:  trying decimal=%s</p>"%(wsplit[0]))
+            if debug:  print("<p>DEBUGGING:  trying decimal={}</p>".format(wsplit[0]))
             return float(wsplit[0])
         elif len(wsplit) == 2 and hours:
-            if debug:  print("<p>DEBUGGING:  trying H=%s M=%s </p>"%(wsplit[0],wsplit[1]))
+            if debug:  print("<p>DEBUGGING:  trying H={} M={} </p>".format(wsplit[0],wsplit[1]))
             return ra2decimal(float(wsplit[0]),float(wsplit[1]),0.0)
         elif len(wsplit)==2 and not hours:
-            if debug:  print("<p>DEBUGGING:  trying D=%s M=%s </p>"%(wsplit[0],wsplit[1]))
+            if debug:  print("<p>DEBUGGING:  trying D={} M={} </p>".format(wsplit[0],wsplit[1]))
             return dec2decimal(float(wsplit[0]),float(wsplit[1]),0.0)
         elif len(wsplit) == 3 and hours:
-            if debug:  print("<p>DEBUGGING:  trying H=%s M=%s S=%s </p>"%(wsplit[0],wsplit[1],wsplit[2]))
+            if debug:  print("<p>DEBUGGING:  trying H={} M={} S={} </p>".format(wsplit[0],wsplit[1],wsplit[2]))
             return ra2decimal(float(wsplit[0]),float(wsplit[1]),float(wsplit[2]))
         elif len(wsplit) == 3 and not hours:
-            if debug:  print("<p>DEBUGGING:  trying D=%s M=%s S=%s </p>"%(wsplit[0],wsplit[1],wsplit[2]))
+            if debug:  print("<p>DEBUGGING:  trying D={} M={} S={} </p>".format(wsplit[0],wsplit[1],wsplit[2]))
             return dec2decimal(float(wsplit[0]),float(wsplit[1]),float(wsplit[2]))
         else:
             print("<p>ERROR:  Cannot parse input coordinate</p>")
 
     except Exception as e:
-        print("<p>ERROR:  cannot convert input into decimal coordinate:  '%s'</p>"&(e))
+        print("<p>ERROR:  cannot convert input into decimal coordinate:  '{}'</p>"&(e))
         return None
 
 
 
 def parse_NameRaDec(entry):
-    if debug:  print("<p>DEBUGGING:  got into parse_NameRaDec('%s')</p>"%entry)
+    if debug:  print("<p>DEBUGGING:  got into parse_NameRaDec({})</p>".format(entry))
     degpat='^\s*[-+]?\d+\.?[dD]'
     decpat='^\s*[+-]?\d+(\.\d*)?$'
     #  Briefly attempted to handle a unicode degree symbol, but couldn't get it to work.
     #deg='º'   #  Simply doesn't match web input
     #deg=u'\xb0'  #  With u causes compile error.  Without, there's simply no match.  
-    deg=u'\u00b0'  # this with (deg.encode('utf-8') in entry) does what I want on the command line but not in the web input
+    deg='\u00b0'  # this with (deg.encode('utf-8') in entry) does what I want on the command line but not in the web input
     if debug:
-        if deg.encode('utf-8') in entry:  print("<p>DEBUGGING:  Found a degree symbol in entry</p>")
+        if deg in entry:  print("<p>DEBUGGING:  Found a degree symbol in entry</p>")
         else: print("<p>DEBUGGING:  Did NOT find a degree symbol in entry</p>")
 
     comsep=re.split('\s*,\s*',entry)
     if len(comsep) == 1:
-        if debug:  print("<p>DEBUGGING:  splits into only one field, '%s'</p>"%comsep)
+        if debug:  print("<p>DEBUGGING:  splits into only one field, '{}'</p>".format(comsep))
         if re.match('^\s*\d+\s*$',comsep[0]):
             if debug:  print("<p>DEBUGGING: this field is all digits;  trying as a TIC ID</p>")
             try:
@@ -329,11 +328,11 @@ def parse_NameRaDec(entry):
             try:
                 return name_resolver(entry)
             except Exception as e:
-                print("<p>ERROR:  Problem calling name_resolver():  %s</p>"%(e))
+                print("<p>ERROR:  Problem calling name_resolver():  {}</p>".format((e)))
                 return entry, None, None
     elif len(comsep) == 2:
-        if debug:  print("<p>DEBUGGING:  splits into two fields, '%s,%s', so assuming RA, DEC</p>"%(comsep[0],comsep[1]))
-        if deg.encode('utf-8') in comsep[0] or re.match(degpat,comsep[0]) or re.match(decpat,comsep[0]):  
+        if debug:  print("<p>DEBUGGING:  splits into two fields, '{},{}', so assuming RA, DEC</p>".format(comsep[0],comsep[1]))
+        if deg in comsep[0] or re.match(degpat,comsep[0]) or re.match(decpat,comsep[0]):  
         #if re.match(degpat,comsep[0]):  
             if debug:  print("<p>DEBUGGING:  first field has what looks like a degree indicator or is simply a decimal</p>")
             hours=False
@@ -343,16 +342,16 @@ def parse_NameRaDec(entry):
         RA=parse_coord(comsep[0],hours=hours)
         DEC=parse_coord(comsep[1],hours=False)
     else:
-        print("<p>ERROR:  entry splits into %s comma-separated fields.  Expecting one name field or two RA,DEC fields.  If your RA,DEC are in sexadecimal format, use spaces instead of commas, i.e. 'H M S.S' and 'D M S.S'.</p>"%len(comsep))
+        print("<p>ERROR:  entry splits into {} comma-separated fields.  Expecting one name field or two RA,DEC fields.  If your RA,DEC are in sexadecimal format, use spaces instead of commas, i.e. 'H M S.S' and 'D M S.S'.</p>".format(len(comsep)))
 
-    if debug:  print("<p>DEBUGGING:  returning entry=%s, RA=%s, and DEC=%s<p>"%(entry,RA, DEC))
+    if debug:  print("<p>DEBUGGING:  returning entry={}, RA={}, and DEC={}<p>".format(entry,RA, DEC))
     return None, RA, DEC
 
 
 
 def ticid2radec(entry):
     if debug:  print("<p>DEBUGGING:  trying to call astropy.mast.Catalogs.query_criteria()</p>")
-    from coordconvert import ra2decimal, dec2decimal
+    #from .coordconvert import ra2decimal, dec2decimal
     from cgi import escape
     import warnings,datetime
 
@@ -364,17 +363,17 @@ def ticid2radec(entry):
            'HOME': homedir
         } )
         if not (os.path.isdir(homedir) or os.path.islink(homedir)):  
-            if debug:  print("<p>Trying to make homedir %s</p>"%homedir)
+            if debug:  print("<p>Trying to make homedir {}</p>".format(homedir))
             try:
                 os.mkdir(homedir)
             except Exception as e:
-                print("<p><font color=red>ERROR:  Failed to make homedir with exception %s</font></e>"%e)
+                print("<p><font color=red>ERROR:  Failed to make homedir with exception {}</font></e>".format(e))
                 return None
 
     homedir=os.environ["HOME"]
 
     if debug:  
-        print("<p>Homedir is %s with contents:"%homedir)
+        print("<p>Homedir is {} with contents:".format(homedir))
         print(os.listdir(homedir))
         if os.path.isdir("{}/.astropy".format(homedir)):
             print(os.listdir("{}/.astropy".format(homedir)))
@@ -393,8 +392,8 @@ def ticid2radec(entry):
 
     if debug:  
         print("<p>DEBUG: trying to import astroquery.mast.Catalogs</p>")
-        print("<p>%s DEBUG: HOME dir is currently %s</p>"%(datetime.datetime.now(),os.environ['HOME']))
-        print("<p>%s DEBUG: HTTP_HOST is currently %s</p>"%(datetime.datetime.now(),os.environ['HTTP_HOST']))
+        print("<p>{} DEBUG: HOME dir is currently {}</p>".format(datetime.datetime.now(),os.environ['HOME']))
+        print("<p>{} DEBUG: HTTP_HOST is currently {}</p>".format(datetime.datetime.now(),os.environ['HTTP_HOST']))
         sys.stdout.flush()
     try:
         from astroquery.mast import Catalogs
@@ -402,7 +401,7 @@ def ticid2radec(entry):
         print("<p>{} ERROR:  failed to import astroquery.mast.Catalogs():  {}</p>".format(datetime.datetime.now(),e))
         sys.stdout.flush()
         raise
-    if debug:  print("<p>%s DEBUG:  Successfully imported astroquery.mast.Catalogs.</p>"%(datetime.datetime.now()))
+    if debug:  print("<p>{} DEBUG:  Successfully imported astroquery.mast.Catalogs.</p>".format(datetime.datetime.now()))
     if debug:  
         import inspect,astroquery
         print("<p>DEBUG:  my astroquery is version {} at {}</p>".format(astroquery.__version__,inspect.getfile(astroquery)))
@@ -424,7 +423,7 @@ def ticid2radec(entry):
 
 def name_resolver(entry):
     #  Do some security checks:
-    from coordconvert import ra2decimal, dec2decimal
+    #from .coordconvert import ra2decimal, dec2decimal
     from cgi import escape
     pattern=r"^[\w\d\s\*_\+-]*$"
     if not re.match(pattern ,entry):
@@ -439,13 +438,13 @@ def name_resolver(entry):
         result=try_simbad_ned(entry,ned=True)
 
     if result is None:  
-        if debug:  print("<p>ERROR:  Didn't find a match in SIMBAD or NED with this string:  '%s'</p>\n"%escape(entry,quote=True))
+        if debug:  print("<p>ERROR:  Didn't find a match in SIMBAD or NED with this string:  '{}'</p>\n".format(escape(entry,quote=True)))
         return entry, None, None
     else:
         if len(result) > 1:  print("Content-type:text/html\n\n<p><font color=red>WARNING:  Multiple matches found.  Using only the first.</font></p>\n")
         if 'RA' in result.colnames:
             [h,m,s]=[float(i) for i in result['RA'][0].split()]
-            if debug:  print("<p>DEBUGGING:  Simbad returned (RA,DEC)=('%s','%s')</p>\n"%(result['RA'],result['DEC']))
+            if debug:  print("<p>DEBUGGING:  Simbad returned (RA,DEC)=('{}','{}')</p>\n".format(result['RA'],result['DEC']))
             RA=ra2decimal(h,m,s)
             [d,m,s]=[float(i) for i in result['DEC'][0].split()]
             DEC=dec2decimal(d,m,s)
@@ -480,29 +479,29 @@ def try_simbad_ned(entry,simbad=False,ned=False):
             'HOME': homedir
         } )
         if not (os.path.isdir(homedir) or os.path.islink(homedir)):  
-            if debug:  print("<p>Trying to make homedir %s</p>"%homedir)
+            if debug:  print("<p>Trying to make homedir {}</p>".format(homedir))
             try:
                 os.mkdir(homedir)
             except Exception as e:
-                print("<p><font color=red>ERROR:  Failed to make homedir with exception %s</font></e>"%e)
+                print("<p><font color=red>ERROR:  Failed to make homedir with exception {}</font></e>".format(e))
                 return None
 
     homedir=os.environ["HOME"]
 
     if debug:  
-        print("<p>Homedir is %s with contents:"%homedir)
+        print("<p>Homedir is {} with contents:".format(homedir))
         print(os.listdir(homedir))
         print("</p>\n")
 
     if debug:  
         print("<p>DEBUG: trying to import astroquery functions</p>")
-        print("<p>DEBUG: HOME dir is currently %s</p>"%os.environ['HOME'])
+        print("<p>DEBUG: HOME dir is currently {}</p>".format(os.environ['HOME']))
     try:
         from astroquery.simbad import Simbad
     except Exception as e:
-        print("<p><font color=red>ERROR:  Cannot import astroquery.simbad:  %s</font></p>"%e)
+        print("<p><font color=red>ERROR:  Cannot import astroquery.simbad:  {}</font></p>".format(e))
         if debug:  
-            print("<p>Homedir is %s with contents:"%homedir)
+            print("<p>Homedir is {} with contents:".format(homedir))
             print(os.listdir(homedir))
             print("</p>\n")
         return None
@@ -510,9 +509,9 @@ def try_simbad_ned(entry,simbad=False,ned=False):
     try:
         from astroquery.ned import Ned
     except Exception as e:
-        print("<p><font color=red>ERROR:  Cannot import astroquery.ned:  %s</font></p>"%e)
+        print("<p><font color=red>ERROR:  Cannot import astroquery.ned:  {}</font></p>".format(e))
         if debug:  
-            print("<p>Homedir is %s with contents:"%homedir)
+            print("<p>Homedir is {} with contents:".format(homedir))
             print(os.listdir(homedir))
             print("</p>\n")
         return None
@@ -521,24 +520,24 @@ def try_simbad_ned(entry,simbad=False,ned=False):
     if simbad:  interpreter="SIMBAD"
     else: interpreter="NED"
     try:
-        if debug:  print("<p>DEBUGGING:  Calling %s with warnings disabled.</p>\n"%interpreter)
+        if debug:  print("<p>DEBUGGING:  Calling {} with warnings disabled.</p>\n".format(interpreter))
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             if simbad:  result= Simbad.query_object(entry)
             else:  result= Ned.query_object(entry)
     except Exception as e:
-        if debug:  print("<p><font color=red>ERROR: %s gives exception %s, with message:  '%s'</p></font>"%(interpreter,e.__class__.__name__,e))
+        if debug:  print("<p><font color=red>ERROR: {} gives exception {}, with message:  '{}'</p></font>".format(interpreter,e.__class__.__name__,e))
         if e.__class__.__name__=='RemoteServiceError':
-            if debug:  print("<p>DEBUGGING:  got RemoteServiceError that usually means NED didn't find '%s';  returning None.</p>\n"%entry)
+            if debug:  print("<p>DEBUGGING:  got RemoteServiceError that usually means NED didn't find '{}';  returning None.</p>\n".format(entry))
             return None
         raise 
 
     if debug and "GATEWAY_INTERFACE" in os.environ:  
-        print("<p><font color=blue>Homedir is %s with contents:</font><br>"%homedir)
+        print("<p><font color=blue>Homedir is {} with contents:</font><br>".format(homedir))
         #print(os.listdir(homedir))
         for root, subdirs, files in os.walk(homedir,topdown=True):
             for f in files:  
-                print("%s :: %s <font color=blue>(%s B)</font><br>\n" % ( time.ctime(os.path.getmtime(os.path.join(root,f))) ,os.path.join(root,f), os.stat(os.path.join(root,f)).st_size ) )
+                print("{} :: {} <font color=blue>({} B)</font><br>\n".format( ( time.ctime(os.path.getmtime(os.path.join(root,f))) ,os.path.join(root,f), os.stat(os.path.join(root,f)).st_size ) ))
         print("</p>\n")
 
     if debug:  
@@ -549,7 +548,7 @@ def try_simbad_ned(entry,simbad=False,ned=False):
         import shutil
         shutil.rmtree(os.path.join(os.environ['HOME'],'.astropy'))
     except Exception as e2:
-        print("<p><font color=red>ERROR: got exception %s trying to clean up astroquery cache, with message:  '%s'</font></p>"%(e2.__class__.__name__,e2))
+        print("<p><font color=red>ERROR: got exception {} trying to clean up astroquery cache, with message:  '{}'</font></p>".format(e2.__class__.__name__,e2))
         return None
 
     return result

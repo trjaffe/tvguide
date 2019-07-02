@@ -1,5 +1,3 @@
-#!/usr1/local/anaconda/bin/python2.7
-
 ################################################################
 #
 #   S-01: Source Sensitivity Calculation
