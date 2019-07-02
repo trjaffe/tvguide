@@ -5,7 +5,7 @@ import numpy as np
 from viewf import viewf, viewdate
 from . import coordconvert
 
-debug=True
+debug=False
 
 class Namespace:
     """  Namespace to mimic args passed to Fortran wrapper view()
