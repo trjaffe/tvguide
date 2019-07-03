@@ -143,39 +143,31 @@ def parse_input(fileitem):
 
     Converts to floats just to be sure, also replaces \r Windows-style
     newlines which aren't parsed correctly.
-
     """
     assert fileitem is not None
     if debug:  print("<p>DEBUGGING: got into parse_input() with fileitem is {}</p>".format(fileitem))
     if debug and fileitem.value:  print("<p>DEBUGGING: got into parse_input() with fileitem.value</p>")
 
+    if not hasattr(fileitem,'file') and type(fileitem) is str:
+        # Given a file on disk for testing
+        if debug:  print("<p>DEBUGGING:  fileitem is str, calling tvguide's parse_file</p>")
+        if not os.path.isfile(fileitem):
+            print("ERROR:  cannot find fileitem '%s'"%fileitem)
+            exit(1)
+        try:
+            with open(fileitem,'r',encoding='utf_8') as infile:
+                #  No decode here because done on open unlike the cgi case below
+                lines=[l for l in infile.readlines()]
+        except Exception as e:
+            print("ERROR:  cannot read file {}: {}".format(fileitem,e))
+    else:
+        lines=[l.decode() for l in fileitem.file.readlines()]
+    # A bit extra to handle Windows-style carriage returns.  genfromtxt used in parse_file doesn't 
+    #  seem to handle them correctly
+    if len(lines) == 1:
+        lines=re.split('\r',lines[0])
     try:
-        if not hasattr(fileitem,'file') and type(fileitem) is str:
-            # Given a file on disk for testing
-            if debug:  print("<p>DEBUGGING:  fileitem is str, calling tvguide's parse_file</p>")
-            if not os.path.isfile(fileitem):
-                print("ERROR:  cannot find fileitem '{}'".format(fileitem))
-                exit(1)
-            inra,indec=parse_file(fileitem,exit_on_error=False)
-        elif fileitem.value:  
-            import StringIO
-            #  Given through POST data?  
-            if debug:  print("<p>DEBUGGING:  fileitem has key 'file' in parse_file, trying to parse it as a string</p>")
-            inra,indec=parse_file(StringIO.StringIO(fileitem.value),exit_on_error=False)
-        else:
-            #  Given a file-like object from the cgi FieldStorage
-            if debug:  print("<p>DEBUGGING:  fileitem is NOT str, assuming an opened object, calling fileitem.file.readline()</p>")
-            first=fileitem.file.readline()
-            second=fileitem.file.readline()
-            # reset it to the beginning after reading the first line, otherwise parse_file() will be missing it!
-            fileitem.file.seek(0) 
-            if '\r' in first or '\r' in second:
-                if debug:  print("<p>DEBUGGING: Found '\\r' in first='{}';  calling reline_input. </p>".format(first))
-                inra,indec=reline_input(fileitem.file)
-            else:
-                inra,indec=parse_file(fileitem.file,exit_on_error=False)
-                inra=inra.tolist()
-                indec=indec.tolist()
+        inra,indec=parse_file(io.StringIO("\n".join(lines)))
     except Exception as e:
         print("<p><font color=red>Problem reading file</font>:  Exception {}</p>".format(e))
 
@@ -232,6 +224,7 @@ def parse_file(infile, exit_on_error=True):
             else:
                 raise e
     return a, b
+
 
 
 def csv_header():
@@ -581,3 +574,6 @@ def tvguide_main():
         print("TBD:  Call for an input file")
 
     return
+
+
+
