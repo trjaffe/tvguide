@@ -83,7 +83,6 @@ def summarize_html( observations, sectors, cameras, ncycle=0):
     """Prints summary stats for HTML output"""
     num=len(observations)
 
-
     print('<div><table class="table-condensed"><tr><th>Summary</th><th>number</th><th>fraction</th></tr>\n'.format(num))
 
     print("<td>Number of sources with at least 1 observation:  </td><td> {:d} </td><td> {:.1f}% </td></tr>".format( len([o for o in observations if o > 0]) , 100.*float(len([o for o in observations if o > 0]))/float(num)) )
@@ -106,13 +105,20 @@ def summarize_html( observations, sectors, cameras, ncycle=0):
 
 def summarize_simple( observations, sectors, cameras, ncycle=0):
     """Prints summary stats for screen output
-    
-    TBD  Add string formatting into columns on-screen
     """
-    pass
+    num=len(observations)
+    print("{:-<70}".format(''))
+    print("{: <50}{: >10}{: >10}".format('Summary for Cycle {:1}'.format(ncycle+1),'number','fraction'))
+    print("{:-<70}".format(''))
 
+    print("{: <50}{: >10}{: >10}".format("Number of sources with at least 1 observation:", len([o for o in observations if o > 0]) , 100.*float(len([o for o in observations if o > 0]))/float(num)) )
+    print("{: <50}{: >10}{: >10}".format("Number of sources with at least 2 observations:",len([o for o in observations if o > 1]) , 100.*float(len([o for o in observations if o > 1]))/float(num)))
+    print("{: <50}{: >10}{: >10}".format("Number of sources not observed: ",len([o for o in observations if o == 0]) , 100.*float(len([o for o in observations if o == 0]))/float(num) ))
 
-
+    for s in range(1,14):
+        print("{: <50}{: >10}{: >10}".format("Number of sources observed in Sector {: >2}:".format(s+ncycle*13), sectors[s-1], 100*sectors[s-1]/float(num)))
+    for c in range(1,5):
+        print("{: <50}{: >10}".format("Number of sources observed in Camera {: >2}:".format(c), cameras[c-1] ))
 
 
 
@@ -374,13 +380,13 @@ def ticid2radec(entry):
 
  
     if debug:  print("<p>DEBUGGING:  environ is {}</p>".format(os.environ))
-    #key='HOST'
     key='HTTP_HOST'
-    if 'heasarcdev' not in os.environ[key]:
-        if debug:  print("<p>DEBUGGING:  {} is {};  trying to reset the HTTP proxies to 128.183.17.248:443</p>".format(key,os.environ[key]))
-        os.environ.update({"HTTPS_PROXY":"128.183.17.248:443","HTTP_PROXY":"128.183.17.248:443"})
-    else:
-        if debug:  print("<p>DEBUGGING:  {} is {};  NOT trying to reset the HTTP proxies</p>".format(key,os.environ[key]))
+    if key in os.environ:
+        if 'heasarcdev' not in os.environ[key]:
+            if debug:  print("<p>DEBUGGING:  {} is {};  trying to reset the HTTP proxies to 128.183.17.248:443</p>".format(key,os.environ[key]))
+            os.environ.update({"HTTPS_PROXY":"128.183.17.248:443","HTTP_PROXY":"128.183.17.248:443"})
+        else:
+            if debug:  print("<p>DEBUGGING:  {} is {};  NOT trying to reset the HTTP proxies</p>".format(key,os.environ[key]))
     sys.stdout.flush()
 
     if debug:  
@@ -548,6 +554,26 @@ def try_simbad_ned(entry,simbad=False,ned=False):
 
 
 
+def process_infile(infile):
+    ra,dec,bad=parse_input(infile)
+    full_outlst=view_list(ra,dec)
+    num_cycles = int(len(full_outlst[:][0])/13)
+    # Print summary info per sector
+    for ncycle in range(num_cycles-1,-1,-1):
+        cycle=ncycle+1 #  ncycle starts from zero for arrays
+        radecs=full_outlst[:,0:2]
+        sectors=full_outlst[:,2+ncycle*13:2+cycle*13]
+        outlst=np.concatenate( (radecs,sectors), axis=1)
+        dates=get_sector_dates(cycle=cycle)
+        observations, sectors, cameras = summarize_list(outlst,ncycle=ncycle)
+        summarize_simple(observations,sectors,cameras,ncycle=ncycle)
+    print("\n(Feel free to write to the helpdesk to suggest other useful stats!)\n")
+    # Write full results to CSV
+#    with open("wtv-{}".format(infile),'w') as outfile:
+#        for row in 
+
+
+
 def tvguide_main():
     """ Main for command-line version, with argument parsing, then calling root functions"""
     import argparse,sys
@@ -558,20 +584,19 @@ def tvguide_main():
 
     args = parser.parse_args()
 
-    if args.source is None and args.infile is None:
-        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be\n  - a name (e.g., 'Cyg X-1'), \n  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), \n  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), \n  - or a TIC ID (e.g., '268644785').\n")
-
-
-    elif args.source is not None:
-        inName, inRA, inDEC = parse_NameRaDec(source)
+    if args.source is not None:
+        inName, inRA, inDEC = parse_NameRaDec(args.source)
         args=Namespace(ra=[float(inRA)],dec=[float(inDEC)])
         try:
             outlst=view(args.ra[0],args.dec[0],quiet=False)
         except Exception as e:
             print("ERROR:  tvguide's view() encountered an error:   '{}'".format(e)) 
 
-    else:  
-        print("TBD:  Call for an input file")
+    elif args.infile is not None:  
+        process_infile(args.infile)
+
+    else:
+        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be\n  - a name (e.g., 'Cyg X-1'), \n  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), \n  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), \n  - or a TIC ID (e.g., '268644785').\n")
 
     return
 
