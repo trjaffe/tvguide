@@ -1,7 +1,4 @@
 build
 build/*
 *~
-<<<<<<< HEAD
-
-=======
->>>>>>> 0538ea182dce7d04f1b62f2c48d076b0eaa644f5
+dist
