@@ -576,6 +576,8 @@ def try_simbad_ned(entry,simbad=False,ned=False):
 
 
 def process_infile(infile):
+    """Prints out summary information for an input CSV file list of sources"""
+
     ra,dec,bad=parse_input(infile)
     full_outlst=view_list(ra,dec)
     num_cycles = int(len(full_outlst[:][0])/13)
