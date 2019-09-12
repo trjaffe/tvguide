@@ -16,7 +16,7 @@ a list of decimal ra,dec pairs.
 ### Prerequisites
 
 Python 2.7+, astropy, astroquery, numpy, and a Fortran compiler such
-as GNU Fortran.  This works best if all are in your Anaconda
+as GNU Fortran.  This works best if all are consistently built in your Anaconda
 installation.
 
 
@@ -67,4 +67,19 @@ This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.t
 
 With thanks to Tom Barclay for a prototype Python wrapper.
 
+
+## Notes
+
+
+Note:  this includes compiled Fortran code.  On OSX, before installing compiled software, be sure you have
+command line tools and the associated libraries.  If you get a compilation error regarding
+something like a missing limits.h, then you need to install these with
+either
+```
+xcode-select --install
+```
+and
+```
+open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14. pkg
+```
 
