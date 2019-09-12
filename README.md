@@ -1,23 +1,24 @@
-# Project Title
-TVGuide -- the Transiting Exoplanet Survey Satellite (TESS) Viewing
-Guide.
+# TVGuide
+
+
 
 ### Summary
 
-This is a downloadable version of the
+This is the Transiting Exoplanet Survey Satellite (TESS) Viewing
+Guide, a downloadable version of the
 [Web TESS Viewing Tool](https://heasarc.gsfc.nasa.gov/cgi-bin/tess/webtess/wtv.py).
 It includes a command line executable that wraps the functions and
-prints the results as well as a package that allows you to call the
+prints a summary of the results as well as a package that allows you to call the
 viewing functions within your own python scripts.  It takes the same
-inputs as the web tool, i.e., several options for a single source, or
-a list of decimal ra,dec pairs.
+inputs as the web tool, i.e., several options for a single source or
+a list of decimal RA,DEC pairs.
 
 
 ### Prerequisites
 
 Python 2.7+, astropy, astroquery, numpy, and a Fortran compiler such
-as GNU Fortran.  This works best if all are consistently built in your Anaconda
-installation.
+as GNU Fortran.  This works best if all are consistently built into an Anaconda
+installation.  Tested under Linux and OSX for Python 2.7 or 3.6.  
 
 
 ### Installing

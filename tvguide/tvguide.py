@@ -151,7 +151,7 @@ def summarize_list(stats,ncycle=0):
 
 
 def parse_input(fileitem):
-    """Double-check the results of tvguide's parse_file, which currently uses numpy.genfromtxt
+    """Managing the input options for a list input, handing contents to parse_lines().
 
     Converts to floats just to be sure, also replaces \r Windows-style
     newlines which aren't parsed correctly.
@@ -210,45 +210,6 @@ def parse_lines(inlines):
                 decs.append(np.nan)
 
     return np.array(ras),np.array(decs),bad 
-
-
-
-def parse_file(infile, exit_on_error=True):
-    """Parse a comma-separated file with columns "ra,dec,magnitude".  From TomB's tvguide wrapper.  
-    """
-
-    try:
-        a, b = np.atleast_2d(
-            np.genfromtxt(
-                infile,
-                usecols=[0, 1],
-                delimiter=',',
-                comments='#',
-                skip_header=0,
-                dtype="f8"
-            )
-        ).T
-    except:
-        try: 
-            a, b = np.atleast_2d(
-                np.genfromtxt(
-                    infile,
-                    delimiter=',',
-                    skip_header=0,
-                    dtype="f8"
-                )
-            ).T
-        except IOError as e:
-            print("There seems to be a problem with the input file, "
-                     "the format should be: RA_degrees (J2000), Dec_degrees (J2000). "
-                     "There should be no header, columns should be "
-                     "separated by a comma")
-            if exit_on_error:
-                sys.exit(1)
-            else:
-                raise e
-    return a, b
-
 
 
 def csv_header():
