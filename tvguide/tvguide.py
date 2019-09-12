@@ -369,7 +369,7 @@ def parse_NameRaDec(entry):
 def ticid2radec(entry):
     if debug:  print("<p>DEBUGGING:  trying to call astropy.mast.Catalogs.query_criteria()</p>")
     #from .coordconvert import ra2decimal, dec2decimal
-    from cgi import escape
+    #from cgi import escape
     import warnings,datetime
 
     if "GATEWAY_INTERFACE" in os.environ:
@@ -430,7 +430,8 @@ def ticid2radec(entry):
     try:              
         catalogData = Catalogs.query_criteria(catalog="Tic", ID=entry)
     except Exception as e:
-        print("<p>ERROR:  astroquery.mast.Catalogs() error {} for string {}</p>".format(e,escape(entry,quote=True)))
+        #print("<p>ERROR:  astroquery.mast.Catalogs() error {} for string {}</p>".format(e,escape(entry,quote=True)))
+        print("<p>ERROR:  astroquery.mast.Catalogs() error {} for string {}</p>".format(e,entry))
         raise
     if debug:  print("<p>DEBUGGING:  this Tic ID gives ra,dec={},{}</p>".format( catalogData['ra'][0], catalogData['dec'][0] ))
     sys.stdout.flush()
@@ -441,7 +442,7 @@ def ticid2radec(entry):
 def name_resolver(entry):
     #  Do some security checks:
     #from .coordconvert import ra2decimal, dec2decimal
-    from cgi import escape
+    #from cgi import escape
     pattern=r"^[\w\d\s\*_\+-]*$"
     if not re.match(pattern ,entry):
         print("Content-type:text/html\n\n<p><font color=red>Illegal characters found in string. </font></p>")
@@ -455,7 +456,8 @@ def name_resolver(entry):
         result=try_simbad_ned(entry,ned=True)
 
     if result is None:  
-        if debug:  print("<p>ERROR:  Didn't find a match in SIMBAD or NED with this string:  '{}'</p>\n".format(escape(entry,quote=True)))
+        #if debug:  print("<p>ERROR:  Didn't find a match in SIMBAD or NED with this string:  '{}'</p>\n".format(escape(entry,quote=True)))
+        if debug:  print("<p>ERROR:  Didn't find a match in SIMBAD or NED with this string:  '{}'</p>\n".format(entry))
         return entry, None, None
     else:
         if len(result) > 1:  print("Content-type:text/html\n\n<p><font color=red>WARNING:  Multiple matches found.  Using only the first.</font></p>\n")
