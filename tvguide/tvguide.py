@@ -10,6 +10,7 @@ debug=False
 class Namespace:
     """  Namespace to mimic args passed to Fortran wrapper view()
     """
+
     def __init__(self,indict=None,**kwargs):
         if indict is not None:  self.__dict__.update(indict)
         else:  self.__dict__.update(kwargs)
@@ -18,6 +19,7 @@ class Namespace:
 
 def view(ra_deg, dec_deg,quiet=True):
     """ Wrapper for Koji Mukai's Fortran TESS viewing tool taking one ra,dec pair in decimal degrees."""
+
     ## Use, e.g.,  utils.parse_NameRaDec() to get the inputs from user form.  
     ## Have to convert ra from decimal degrees to decimal *hours*. 
     from astropy.coordinates import SkyCoord
@@ -51,10 +53,11 @@ def view(ra_deg, dec_deg,quiet=True):
 
 
 def view_list( ras, decs, nsectors=None ):
-    """ Wrapper for Koji Mukai's Fortran TESS viewing tool taking a CSV file list.
+    """ Wrapper for Koji Mukai's Fortran TESS viewing tool taking a list of RAs and a list of DECs.
 
-    By default, nsectors is 2x13 for the first two cycles.  Update as needed.
+    By default, nsectors is 2x13 for the first two cycles.  To be updated as needed.
     """
+
     if nsectors is None:
         nsectors=2*13
     # Will return a camera number for each of 13 sectors
@@ -81,6 +84,7 @@ def get_sector_dates(cycle=1):
 
 def summarize_html( observations, sectors, cameras, ncycle=0):
     """Prints summary stats for HTML output"""
+
     num=len(observations)
 
     print('<div><table class="table-condensed"><tr><th>Summary</th><th>number</th><th>fraction</th></tr>\n'.format(num))
@@ -106,25 +110,27 @@ def summarize_html( observations, sectors, cameras, ncycle=0):
 def summarize_simple( observations, sectors, cameras, ncycle=0):
     """Prints summary stats for screen output
     """
+
     num=len(observations)
     print("{:-<70}".format(''))
-    print("{: <50}{: >10}{: >10}".format('Summary for Cycle {:1}'.format(ncycle+1),'number','fraction'))
+    print("{: <50} {: >10} {: >10}".format('Summary for Cycle {:1}'.format(ncycle+1),'number','fraction'))
     print("{:-<70}".format(''))
 
-    print("{: <50}{: >10}{: >10}".format("Number of sources with at least 1 observation:", len([o for o in observations if o > 0]) , 100.*float(len([o for o in observations if o > 0]))/float(num)) )
-    print("{: <50}{: >10}{: >10}".format("Number of sources with at least 2 observations:",len([o for o in observations if o > 1]) , 100.*float(len([o for o in observations if o > 1]))/float(num)))
-    print("{: <50}{: >10}{: >10}".format("Number of sources not observed: ",len([o for o in observations if o == 0]) , 100.*float(len([o for o in observations if o == 0]))/float(num) ))
+    print("{: <50} {: >10} {: >10.2f}".format("Number of sources with at least 1 observation:", len([o for o in observations if o > 0]) , 100.*float(len([o for o in observations if o > 0]))/float(num)) )
+    print("{: <50} {: >10} {: >10.2f}".format("Number of sources with at least 2 observations:",len([o for o in observations if o > 1]) , 100.*float(len([o for o in observations if o > 1]))/float(num)))
+    print("{: <50} {: >10} {: >10.2f}".format("Number of sources not observed: ",len([o for o in observations if o == 0]) , 100.*float(len([o for o in observations if o == 0]))/float(num) ))
 
     for s in range(1,14):
-        print("{: <50}{: >10}{: >10}".format("Number of sources observed in Sector {: >2}:".format(s+ncycle*13), sectors[s-1], 100*sectors[s-1]/float(num)))
+        print("{: <50} {: >10} {: >10.2f}".format("Number of sources observed in Sector {: >2}:".format(s+ncycle*13), sectors[s-1], 100*sectors[s-1]/float(num)))
     for c in range(1,5):
-        print("{: <50}{: >10}".format("Number of sources observed in Camera {: >2}:".format(c), cameras[c-1] ))
+        print("{: <50} {: >10}".format("Number of sources observed in Camera {: >2}:".format(c), cameras[c-1] ))
 
 
 
 def summarize_list(stats,ncycle=0):
     """ Compute summary statistics to be printed with either summarize_html() or summarize()
     """
+
     num=stats.shape[0]
     
     observations=[len([s for s in stats[row,2:15] if s > 0]) for row in range(num)]
@@ -150,6 +156,7 @@ def parse_input(fileitem):
     Converts to floats just to be sure, also replaces \r Windows-style
     newlines which aren't parsed correctly.
     """
+
     assert fileitem is not None
     if debug:  print("<p>DEBUGGING: got into parse_input() with fileitem is {}</p>".format(fileitem))
     if debug and fileitem.value:  print("<p>DEBUGGING: got into parse_input() with fileitem.value</p>")
@@ -161,7 +168,8 @@ def parse_input(fileitem):
             print("ERROR:  cannot find fileitem '%s'"%fileitem)
             exit(1)
         try:
-            with open(fileitem,'r',encoding='utf_8') as infile:
+            ## Use io.open for encoding compatibility with 2 and 3.
+            with io.open(fileitem,'r',encoding='utf_8') as infile:
                 #  No decode here because done on open unlike the cgi case below
                 lines=[l for l in infile.readlines()]
         except Exception as e:
@@ -173,32 +181,42 @@ def parse_input(fileitem):
     if len(lines) == 1:
         lines=re.split('\r',lines[0])
     try:
-        inra,indec=parse_file(io.StringIO("\n".join(lines)))
+        #inra,indec=parse_file(io.StringIO("\n".join(lines)))
+        ra,dec,bad=parse_lines(lines)
     except Exception as e:
         print("<p><font color=red>Problem reading file</font>:  Exception {}</p>".format(e))
 
-    ra=np.zeros(len(inra))
-    dec=np.zeros(len(indec))
-    bad=0
-    for i in range(len(inra)):
-        try:
-            ra[i]=float(inra[i])
-        except Exception as e:
-            bad+=1
-            ra[i]=np.nan
-    for i in range(len(indec)):
-        try:
-            dec[i]=float(indec[i])
-        except Exception as e:
-            bad+=1
-            dec[i]=np.nan
     return ra,dec,bad
+
+
+def parse_lines(inlines):
+    """Parses input list of strings into numpy array of ras, decs as floats"""
+
+    ras=[]
+    decs=[]
+    bad=0
+    for line in inlines:  
+        if not line.startswith('#'):
+            ra,dec = tuple( line.split(',')[0:2] )
+            try:
+                ras.append(float(ra.strip()))
+            except:
+                bad+=1
+                ras.append(np.nan)
+            try:
+                decs.append(float(dec.strip()))
+            except:
+                bad+=1
+                decs.append(np.nan)
+
+    return np.array(ras),np.array(decs),bad 
 
 
 
 def parse_file(infile, exit_on_error=True):
     """Parse a comma-separated file with columns "ra,dec,magnitude".  From TomB's tvguide wrapper.  
     """
+
     try:
         a, b = np.atleast_2d(
             np.genfromtxt(
@@ -465,6 +483,7 @@ def try_simbad_ned(entry,simbad=False,ned=False):
     source name isn't found.  Simbad.query_object() issues a warning.
     Ned.query_object() issues an exception.
     """
+
     import warnings
 
     if "GATEWAY_INTERFACE" in os.environ:
@@ -576,6 +595,7 @@ def process_infile(infile):
 
 def tvguide_main():
     """ Main for command-line version, with argument parsing, then calling root functions"""
+
     import argparse,sys
     parser = argparse.ArgumentParser()
     parser.add_argument("--source",type=str,default=None,help="Input a single source")

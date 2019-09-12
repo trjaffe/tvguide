@@ -1,1 +1,2 @@
-from tvguide import *
+from .tvguide import *
+from .coordconvert import *
