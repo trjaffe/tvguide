@@ -34,16 +34,17 @@
 *-RD_ASTRO
 
         logical fiften, on, dot, minus, comma
-        character*8 formt
+        character*16 formt
         character one
         integer len, lbeg, l, k
-        integer beg( 3 ), fin( 3 ), done( 3 )
+        integer beg( 3 ), fin( 3 ), done( 3 ), dlen
         integer hh, mm, ssint
         real realnm, ss, temp
 
         integer LENTRIM
 
         flag = 0
+	value = -9.9999d+01
 
         if( code .eq. 'R' .or. code .eq. 'r' ) then
           fiften = .true.
@@ -159,15 +160,19 @@
 
         if( k .eq. 1 ) then
 *                           ! dd.ddd format
-          if( fin( 1 ) - beg( 1 ) .ge. 20 ) then
+          dlen = fin( 1 ) - beg( 1 ) + 1
+          if( dlen .ge. 100 ) then
             flag = -9
             goto 900
           else if( done( 1 ) .eq. 1 ) then
             flag = -12
             goto 900
           end if
-          write( formt, '(''(f'',i2.2,''.1)'')' )
-     &                                           fin( 1 ) - beg( 1 ) + 1
+	  if( dlen .ge. 10 ) then
+            write( formt, '(''(f'',i2,''.1)'')' ) dlen
+          else
+            write( formt, '(''(f'',i1,''.1)'')' ) dlen
+          end if
           read( in_line( beg( 1 ): fin( 1 ) ), formt ) realnm
           if( fiften ) then
             if( minus ) then
@@ -210,12 +215,16 @@
               read( in_line( beg( 2 ): fin( 2 ) ), formt ) ssint
               ss = REAL( ssint )
             else
-              if( fin( 2 ) - beg( 2 ) .ge. 10 ) then
+	      dlen = fin( 2 ) - beg( 2 ) + 1
+              if( dlen .ge. 100 ) then
                 flag = -9
                 goto 900
               end if
-              write( formt, '(''(f'',i1,''.1)'')' )
-     &                                       fin( 2 ) - beg( 2 ) + 1
+	      if( dlen .ge. 10 ) then
+                write( formt, '(''(f'',i2,''.1)'')' ) dlen
+	      else
+                write( formt, '(''(f'',i1,''.1)'')' ) dlen
+	      end if
               read( in_line( beg( 2 ): fin( 2 ) ), formt ) ss
             end if
             if( ss .lt. 0.0 .or. ss .ge. 60.0 ) then
@@ -251,12 +260,16 @@
               read( in_line( beg( 3 ): fin( 3 ) ), formt ) ssint
               ss = REAL( ssint )
             else
-              if( fin( 3 ) - beg( 3 ) .ge. 10 ) then
+	      dlen = fin( 3 ) - beg( 3 ) + 1
+              if( dlen .ge. 100 ) then
                 flag = -9
                 goto 900
               end if
-              write( formt, '(''(f'',i1,''.1)'')' )
-     &                                       fin( 3 ) - beg( 3 ) + 1
+	      if( dlen .ge. 10 ) then
+                write( formt, '(''(f'',i2,''.1)'')' ) dlen
+	      else
+                write( formt, '(''(f'',i1,''.1)'')' ) dlen
+	      end if
               read( in_line( beg( 3 ): fin( 3 ) ), formt ) ss
             end if
             if( ss .lt. 0.0 .or. ss .ge. 60.0 ) then
