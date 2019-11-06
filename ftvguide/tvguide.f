@@ -12,14 +12,14 @@
         character*12 v_string
 *       There are 13 sectors per cycle
         parameter( m_sect = 13 )
-*       There are 2 cycles recognized by this version of TVGUIDE
-        parameter( n_cycle = 2 )
+*       There are 3 cycles recognized by this version of TVGUIDE
+        parameter( n_cycle = 3 )
 *       There are 4 cameras on-board TESS
         parameter( n_camera = 4 )
 *       Up to 32 missions allowed
         parameter( n_opt = 3 )
 *       Version number string
-        parameter( v_string = 'Version 1.2' )
+        parameter( v_string = 'Version 1.3' )
 
         character*255 cline
         character*10 ra_string
@@ -30,7 +30,8 @@
         integer in_unit, out_unit
         integer n_obj, len
 	integer status, flag
-	integer totint, intvls( 26 ), flags( 26 )
+	integer totint, intvls( n_cycle * m_sect )
+	integer flags( n_cycle * m_sect )
 	real equinox
 	double precision mid_jd
         double precision in_ra, in_dec, alpha, delta, dequinox
@@ -216,7 +217,7 @@
 	  
           if( .not. termout ) then
 	     write( out_unit, 600 ) totint, star( : len ), intvls
- 600	     format( i2, ' ', a, 26( ' ', i1 ) )
+ 600	     format( i2, ' ', a, 39( ' ', i1 ) )
           end if
 *         Rejoin here if error found during interactive input
  700      continue

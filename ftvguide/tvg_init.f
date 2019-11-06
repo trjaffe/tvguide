@@ -31,7 +31,7 @@
 *       There are 13 sectors per cycle
         integer n_cycle, m_sect, n_camera
         double precision oneeighty, sixty, twentyfour, two, half, zero
-	parameter( n_cycle = 2 )
+	parameter( n_cycle = 3 )
         parameter( m_sect = 13 )
 	parameter( n_camera = 4 )
         parameter( oneeighty = 1.80d+02 )

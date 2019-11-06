@@ -27,7 +27,7 @@
 
 *       There are 13 sectors per cycle
 	integer n_cycle, m_sect
-	parameter( n_cycle = 2 )
+	parameter( n_cycle = 3 )
         parameter( m_sect = 13 )
 
 	integer n_sects( n_cycle )

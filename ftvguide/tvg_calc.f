@@ -5,13 +5,15 @@
         implicit none
 	
         integer n_cycle, m_sect, n_camera
-	parameter( n_cycle = 2 )
+	parameter( n_cycle = 3 )
         parameter( m_sect = 13 )
 	parameter( n_camera = 4 )
 
 	logical termout
 	double precision alpha, delta
-	integer intvls( 26 ), flags( 26 ), totint
+	integer intvls( n_cycle * m_sect )
+	integer flags( n_cycle * m_sect )
+	integer totint
 	
 *       Description
 *         This routine does the actual calculations for a single object
@@ -37,7 +39,6 @@
 *         Koji Mukai, 2018 Nov 27, multi-cycle version
 *-TVG_CALC
 
-	logical dothis( n_cycle )
         integer cycle, off_sect
         integer i, j, jj, k
 	double precision lambda, beta, lambda0, beta0, twist, shift
@@ -79,48 +80,8 @@ c       call TO_ECLIP( alpnow, dltnow, jds( cycle ), lambda, beta )
 	  write( *, 310 ) lambda, beta
  310	  format( 'Ecliptic longitude: ', f7.2, '; latitude: ', f7.2 )
         end if
-	
-	if( beta .le. c1limit ) then
-*         In the southern ecliptic hemisphere - potential Cycle 1 target
-          dothis( 1 ) = .true.
-	  dothis( 2 ) = .false.
-          if( beta .ge. c1gap ) then
-	    if( termout ) then
-              write( *,
-     &       '(''This target might fall in the gap between sectors'')' )
-              end if
-          else
-	    if( termout ) then
-	      write( *,
-     &       '(''This target should be observable during Cycle 1'')' )
-            end if
-          end if
-	else if( beta .ge. c2limit ) then
-*         In the northeern ecliptic hemisphere - potential Cycle 2 target
-          dothis( 1 ) = .false.
-	  dothis( 2 ) = .true.
-          if( beta .le. c2gap ) then
-	    if( termout ) then
-              write( *,
-     &       '(''This target might fall in the gap between sectors'')' )
-                end if
-          else
-	    if( termout ) then
-	      write( *,
-     &       '(''This target should be observable during Cycle 2'')' )
-            end if
-          end if
-        else
-          dothis( 1 ) = .false.
-	  dothis( 2 ) = .false.
-	  if( termout ) then
-            write( *,
-     &     '(''This target cannot be observed during Cycle 1 or 2'')' )
-          end if
-	end if
 
-        call ECL_CARTS( lambda, beta, targt )
-        totint = 0
+	totint = 0
 	off_sect = 0
 	do cycle = 1, n_cycle
           do j = 1, n_sects( cycle )
@@ -128,68 +89,81 @@ c       call TO_ECLIP( alpnow, dltnow, jds( cycle ), lambda, beta )
 	    intvls( jj ) = 0
 	    flags( jj ) = 0
 	  end do
-	  if( dothis( cycle ) ) then
-*           Try with 13 sectors starting with ecliptic longitude L0+delta
-            do j = 1, n_sects( cycle )
-	      jj = off_sect + j
-c	      find sector fov center
-              lambda0 = c_elon( cycle, j )
-	      beta0 = f_beta( cycle, j )
-	      twist = d2c4( cycle, j )
-	      call ECL_CARTS( lambda0, beta0, sfov )
-c              lambda_ = lambda - lambda0
-              call VEC_FNDIR( sfov, orgnorth, temp )
-              call VEC_TWIST( sfov, temp, twist, cnorth )
-c	      call ECL_CARTS( lambda_, beta, targt )
-	      do k = 1, n_camera
-	        shift = d_beta( k )
-                call VEC_ROTAT( sfov, cnorth, shift, cfov, ccnorth )
-c	        call VEC_PRDCT( cfov, ccnorth, cceast )
-	        call VEC_PRDCT( ccnorth, cfov, cceast )
-	        offset = VEC_ANGLE( targt, cfov )
-	        cosoff = cos( offset * deg2rad )
-	        if( offset .le. corner ) then
-	          do i = 1, 3
-	            tgt_cc( i ) = targt( i ) / cosoff - cfov( i )
-	          end do
-* 	          Get the angle between cc and targt
-*	          but what I really care is the angle between tgt_cc
-*	          projected along locx/locy an
-                  call VEC_RENRM( tgt_cc )
-c	          beta0 = betas( cycle, k ) * deg2rad
-c	          locy( 1 ) = -sin( beta0 )
-c	          locy( 3 ) = cos( beta0 )
-	          locxang = VEC_ANGLE( tgt_cc, cceast ) * deg2rad
-	          locyang = VEC_ANGLE( tgt_cc, ccnorth )
-                  offsetx = offset * cos( locxang )
-	          if( locyang .le. 90.0 ) then
-	            offsety = offset * sin( locxang )
-	          else
-	            offsety = -offset * sin( locxang )
-	          end if
-	          if( abs( offsetx ) .le. edge
+	  off_sect = off_sect + n_sects( cycle )
+	end do
+	
+	if( beta .gt. c1limit .and. beta .lt. c2limit ) then
+	  if( termout ) then
+            write( *,
+     &     '(''This target cannot be observed during Cycle 1-3'')' )
+          end if
+	  return
+	end if
+
+        call ECL_CARTS( lambda, beta, targt )
+
+	off_sect = 0
+	do cycle = 1, n_cycle
+*         Try with 13 sectors starting with ecliptic longitude L0+delta
+          do j = 1, n_sects( cycle )
+	    jj = off_sect + j
+c	    find sector fov center
+            lambda0 = c_elon( cycle, j )
+	    beta0 = f_beta( cycle, j )
+	    twist = d2c4( cycle, j )
+	    call ECL_CARTS( lambda0, beta0, sfov )
+c            lambda_ = lambda - lambda0
+            call VEC_FNDIR( sfov, orgnorth, temp )
+            call VEC_TWIST( sfov, temp, twist, cnorth )
+c	    call ECL_CARTS( lambda_, beta, targt )
+	    do k = 1, n_camera
+	      shift = d_beta( k )
+              call VEC_ROTAT( sfov, cnorth, shift, cfov, ccnorth )
+c	      call VEC_PRDCT( cfov, ccnorth, cceast )
+	      call VEC_PRDCT( ccnorth, cfov, cceast )
+	      offset = VEC_ANGLE( targt, cfov )
+	      cosoff = cos( offset * deg2rad )
+	      if( offset .le. corner ) then
+	        do i = 1, 3
+	          tgt_cc( i ) = targt( i ) / cosoff - cfov( i )
+	        end do
+* 	        Get the angle between cc and targt
+*	        but what I really care is the angle between tgt_cc
+*	        projected along locx/locy an
+                call VEC_RENRM( tgt_cc )
+c	        beta0 = betas( cycle, k ) * deg2rad
+c	        locy( 1 ) = -sin( beta0 )
+c	        locy( 3 ) = cos( beta0 )
+	        locxang = VEC_ANGLE( tgt_cc, cceast ) * deg2rad
+	        locyang = VEC_ANGLE( tgt_cc, ccnorth )
+                offsetx = offset * cos( locxang )
+	        if( locyang .le. 90.0 ) then
+	          offsety = offset * sin( locxang )
+	        else
+	          offsety = -offset * sin( locxang )
+	        end if
+	        if( abs( offsetx ) .le. edge
      &                             .and. abs( offsety ) .le. edge ) then
-                    if( termout ) then
-	              write( *, 400 )
+                  if( termout ) then
+	            write( *, 400 )
      &                     jj, sd_strng( cycle, j ), k, offsetx, offsety
- 400	              format( 'in sector ', i2, ' (', a, ') camera ',
+ 400	            format( 'in sector ', i2, ' (', a, ') camera ',
      &                    i1, ' at offsets of (', f6.2, ',', f6.2, ')' )
-                    end if
-                    if( abs( offsetx ) .le. gapx
+                  end if
+                  if( abs( offsetx ) .le. gapx
      &                              .or. abs( offsety ) .le. gapy ) then
-                      if( termout ) then
-	                write( *, 401 )
- 401	                format( 'Except it may be in the chip gap' )
-		      end if
-		    else
-		      intvls( jj ) = k
-		      totint = totint + 1
-		    end if
+                    if( termout ) then
+	              write( *, 401 )
+ 401	              format( 'Except it may be in the chip gap' )
+                    end if
+		  else
+		    intvls( jj ) = k
+		    totint = totint + 1
 		  end if
                 end if
-              end do
+              end if
             end do
-          end if
+          end do
 	  off_sect = off_sect + n_sects( cycle )
 	end do
 	

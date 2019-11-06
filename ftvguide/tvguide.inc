@@ -5,6 +5,7 @@
 *       Number of sectors per cycle
 	n_sects( 1 ) = 13
 	n_sects( 2 ) = 13
+	n_sects( 3 ) = 13
 c        pg_strng( 1,  0 ) = '2018-Jul-25T04:59'
         pg_strng( 1,  0 ) = '2018-Jul-25T04:45'
 c        pg_strng( 1,  1 ) = '2018-Aug-22T23:49'
@@ -63,6 +64,21 @@ c        pg_strng( 2, 12 ) = '2020-Jun-08T22:22'
 c        pg_strng( 2, 13 ) = '2020-Jul-04T22:45'
         pg_strng( 2, 13 ) = '2020-Jul-04T22:45'
 
+	pg_strng( 3,  0 ) = '2020-Jul-04T22:45'
+	pg_strng( 3,  1 ) = '2020-Jul-30T20:51'
+	pg_strng( 3,  2 ) = '2020-Aug-26T07:18'
+	pg_strng( 3,  3 ) = '2020-Sep-22T18:14'
+	pg_strng( 3,  4 ) = '2020-Oct-21T05:28'
+	pg_strng( 3,  5 ) = '2020-Nov-19T00:56'
+	pg_strng( 3,  6 ) = '2020-Dec-17T10:07'
+	pg_strng( 3,  7 ) = '2021-Jan-13T21:25'
+	pg_strng( 3,  8 ) = '2021-Feb-09T09:36'
+	pg_strng( 3,  9 ) = '2021-Mar-07T06:34'
+	pg_strng( 3, 10 ) = '2021-Apr-02T02:26'
+	pg_strng( 3, 11 ) = '2021-Apr-28T16:42'
+	pg_strng( 3, 12 ) = '2021-May-26T16:01'
+	pg_strng( 3, 13 ) = '2021-Jun-24T16:49'
+
 *       Camera center relative to the FOV center
         d_beta( 1 ) = -3.6d+01
         d_beta( 2 ) = -1.2d+01
@@ -96,6 +112,19 @@ c        pg_strng( 2, 13 ) = '2020-Jul-04T22:45'
 	f_beta( 2, 11 ) = +5.4d+01
 	f_beta( 2, 12 ) = +5.4d+01
 	f_beta( 2, 13 ) = +5.4d+01
+	f_beta( 3,  1 ) = -5.4d+01
+	f_beta( 3,  2 ) = -5.4d+01
+	f_beta( 3,  3 ) = -5.4d+01
+	f_beta( 3,  4 ) = -5.4d+01
+	f_beta( 3,  5 ) = -5.4d+01
+	f_beta( 3,  6 ) = -5.4d+01
+	f_beta( 3,  7 ) = -5.4d+01
+	f_beta( 3,  8 ) = -5.4d+01
+	f_beta( 3,  9 ) = -5.4d+01
+	f_beta( 3, 10 ) = -5.4d+01
+	f_beta( 3, 11 ) = -5.4d+01
+	f_beta( 3, 12 ) = -5.4d+01
+	f_beta( 3, 13 ) = -5.4d+01
 
 *	Direction from FOV center to Camera 4 centor (0: north)
 	d2c4( 1,  1 ) = -1.8d+02
@@ -124,6 +153,19 @@ c        pg_strng( 2, 13 ) = '2020-Jul-04T22:45'
 	d2c4( 2, 11 ) = 0.0d+00
 	d2c4( 2, 12 ) = 0.0d+00
 	d2c4( 2, 13 ) = 0.0d+00
+	d2c4( 3,  1 ) = -1.8d+02
+	d2c4( 3,  2 ) = -1.8d+02
+	d2c4( 3,  3 ) = -1.8d+02
+	d2c4( 3,  4 ) = -1.8d+02
+	d2c4( 3,  5 ) = -1.8d+02
+	d2c4( 3,  6 ) = -1.8d+02
+	d2c4( 3,  7 ) = -1.8d+02
+	d2c4( 3,  8 ) = -1.8d+02
+	d2c4( 3,  9 ) = -1.8d+02
+	d2c4( 3, 10 ) = -1.8d+02
+	d2c4( 3, 11 ) = -1.8d+02
+	d2c4( 3, 12 ) = -1.8d+02
+	d2c4( 3, 13 ) = -1.8d+02
 
 	c1limit = -5.8739d+00
         c1gap = -2.9926d+01
