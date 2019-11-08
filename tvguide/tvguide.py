@@ -57,9 +57,13 @@ def view_list( ras, decs, nsectors=None ):
 
     By default, nsectors is 2x13 for the first two cycles.  To be updated as needed.
     """
+    try:
+        tmp=view(0,0)
+        nsectors=len(tmp)
+    except Exception as e:
+        print("ERROR:  Could not call view() to test number of sectors:  {}".format(e))
+        raise
 
-    if nsectors is None:
-        nsectors=2*13
     # Will return a camera number for each of 13 sectors
     cameras=np.zeros((len(ras),nsectors+2))
     for i,ra in np.ndenumerate(ras):
