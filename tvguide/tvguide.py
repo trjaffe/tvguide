@@ -217,7 +217,14 @@ def parse_lines(inlines):
 
 
 def csv_header():
-    cycles=[1,2]
+    try:
+        tmp=viewf(0,0)
+        num_cycles = int(len(tmp)/13)
+    except Exception as e:
+        print("ERROR:  Cannot run viewf() to get number of cycles:  {}".format(e))
+        raise
+
+    cycles=range(num_cycles)+1
     header=""
     for cycle in cycles:
         header+="\n# For TESS observing Cycle {}\n# ".format(cycle)
