@@ -32,7 +32,7 @@ C
 C
 C     Trivial wrapper to get the date string for a given sector.
 C
-      character*39, intent(out) :: DATE
+      character*26, intent(out) :: DATE
       integer, intent(in) :: CYCLE, SECTOR
 !f2py intent(out) DATE
 !f2py intent(in) N

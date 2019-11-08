@@ -1,6 +1,9 @@
 C
-C  If you edit this file in a way that changes the interface, then run 
-C     f2py --overwrite-signature -m viewf -h viewf.pyf view.f
+C  If you edit this file in a way that changes the interface, 
+C     e.g., to add a cycle, which increases the number of sectors,
+C     then run from this directory:
+C          f2py --overwrite-signature -m viewf -h viewf.pyf view.f
+C     (f2py should be in your anaconda build)
 C
 C FILE: VIEW.F
       SUBROUTINE VIEWF(INTVLS, ALPHA, DELTA)
@@ -8,7 +11,7 @@ C
 C     Trivial wrapper to Koji's functions:  
 C
       DOUBLE PRECISION ALPHA, DELTA
-      INTEGER TOTINT, INTVLS( 26 ), FLAGS( 26 )
+      INTEGER TOTINT, INTVLS( 39 ), FLAGS( 39 )
 Cf2py intent(in) :: ALPHA, DELTA
 Cf2py intent(out) :: INTVLS
 C
@@ -29,7 +32,7 @@ C
 C
 C     Trivial wrapper to get the date string for a given sector.
 C
-      character*26, intent(out) :: DATE
+      character*39, intent(out) :: DATE
       integer, intent(in) :: CYCLE, SECTOR
 !f2py intent(out) DATE
 !f2py intent(in) N

@@ -11,7 +11,7 @@ python module viewf ! in
         subroutine viewdate(cycle,sector,date) ! in :viewf:view.f
             integer intent(in) :: cycle
             integer intent(in) :: sector
-            character*39 intent(out) :: date
+            character*26 intent(out) :: date
         end subroutine viewdate
     end interface 
 end python module viewf
