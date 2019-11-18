@@ -23,6 +23,7 @@ installation.  Tested under Linux and OSX for Python 2.7 or 3.6.
 
 ### Installing
 
+Download or clone this repo, and from within the top level directory:
 ```
 python setup.py install
 ```
