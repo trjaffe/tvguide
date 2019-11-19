@@ -223,13 +223,14 @@ def csv_header():
     except Exception as e:
         print("ERROR:  Cannot run viewf() to get number of cycles:  {}".format(e))
         raise
-
-    cycles=range(num_cycles)+1
+    if debug:
+        print("<p>DEBUGGING:  num_cycles={}</p>".format(num_cycles))
+    cycles=range(num_cycles)
     header=""
     for cycle in cycles:
-        header+="\n# For TESS observing Cycle {}\n# ".format(cycle)
-        dates=get_sector_dates(cycle=cycle)
-        header+="\n# ".join([ "Sector {:2d} observed {}".format(s+13*(cycle-1),d) for s,d in enumerate(dates,1)])
+        header+="\n# For TESS observing Cycle {}\n# ".format(cycle+1)
+        dates=get_sector_dates(cycle=cycle+1)
+        header+="\n# ".join([ "Sector {:2d} observed {}".format(s+13*cycle,d) for s,d in enumerate(dates,1)])
         if debug:  print("<p>DEBUGGING:  header is {}</p>".format(header))
     header+="\n#\n#RA,DEC,"
     for i in range(13*len(cycles)-1):
