@@ -317,7 +317,8 @@ def parse_NameRaDec(entry):
             try:
                 return name_resolver(entry)
             except Exception as e:
-                print("<p>ERROR:  Problem calling name_resolver():  {}</p>".format((e)))
+                #  Don't do this print here.  It messes up the HTML.  Caller should handle None return. 
+                #print("<p>ERROR:  Problem calling name_resolver():  {}</p>".format((e)))
                 return entry, None, None
     elif len(comsep) == 2:
         if debug:  print("<p>DEBUGGING:  splits into two fields, '{},{}', so assuming RA, DEC</p>".format(comsep[0],comsep[1]))
