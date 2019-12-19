@@ -76,7 +76,7 @@ With thanks to Tom Barclay for a prototype Python wrapper.
 Note:  this includes compiled Fortran code.  On OSX, before installing compiled software, be sure you have
 command line tools and the associated libraries.  If you get a compilation error regarding
 something like a missing limits.h, then you need to install these with
-either
+
 ```
 xcode-select --install
 ```

@@ -1,10 +1,4 @@
 #!/usr/bin/env python
- 
-##
-##  As usual, run something like:
-##  > setenv PYTHONPATH "/Users/tjaffe/space/sw/TESS/local/cgi-bin/tess/install/lib/python2.7/site-packages:${PYTHONPATH}"
-##  > python2.7 setup.py install --prefix=/Users/tjaffe/space/sw/TESS/local/cgi-bin/tess/install
-##
 
 import setuptools
 from numpy.distutils.core import setup
@@ -44,7 +38,8 @@ files=['*']
 
 if __name__ == "__main__":
     setup(name = 'tvguide',
-          version='0.1',
+          version="1.0.0",
+          download_url = "https://github.com/trjaffe/tvguide/archive/v_100.tar.gz",
           description       = "TESS Viewing Guide",
           author            = "T. R. Jaffe",
           author_email      = "trjaffe@gmail.com",
