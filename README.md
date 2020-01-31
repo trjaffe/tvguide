@@ -64,6 +64,7 @@ tvguide.process_infile('data/test.lis')
 Alternatively, there is a command-line executable:
 
 ```
+> tvguide
  USAGE:  tvguide [--source=] [--infile=]
 
 where the source string can be
