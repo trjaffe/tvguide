@@ -38,8 +38,8 @@ files=['*']
 
 if __name__ == "__main__":
     setup(name = 'tvguide',
-          version="0.9.0",
-          download_url = "https://github.com/trjaffe/tvguide/archive/v_090.tar.gz",
+          version="0.9.1",
+          download_url = "https://github.com/trjaffe/tvguide/archive/v_091.tar.gz",
           description       = "TESS Viewing Guide",
           author            = "T. R. Jaffe",
           author_email      = "trjaffe@gmail.com",
