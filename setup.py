@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-import setuptools
-from numpy.distutils.core import setup
+from numpy.distutils.core import setup, Extension
 
 
 # Define the Fortran extension.
-from numpy.distutils.core import Extension
 viewf = Extension(name="viewf",
                     sources=["ftvguide/cartesian.f",
                              "ftvguide/dcd_arg.f",
