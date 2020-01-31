@@ -23,7 +23,14 @@ installation.  Tested under Linux and OSX for Python 2.7 or 3.6.
 
 ### Installing
 
-Download or clone this repo, and from within the top level directory:
+
+This can be installed with pip:
+
+```
+pip install tvguide
+```
+
+Alternatively, download or clone this repo, and from within the top level directory:
 ```
 python setup.py install
 ```
@@ -54,6 +61,19 @@ Or print out a summary of a list on disk:
 tvguide.process_infile('data/test.lis')
 ```
 
+Alternatively, there is a command-line executable:
+
+```
+ USAGE:  tvguide [--source=] [--infile=]
+
+where the source string can be
+  - a name (e.g., 'Cyg X-1'),
+  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'),
+  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'),
+  - or a TIC ID (e.g., '268644785').
+
+or an input file consisting of a CSV file with RA,DEC pairs.
+```
 
 
 ## Authors

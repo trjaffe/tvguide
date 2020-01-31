@@ -594,7 +594,7 @@ def tvguide_main():
         process_infile(args.infile)
 
     else:
-        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be\n  - a name (e.g., 'Cyg X-1'), \n  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), \n  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), \n  - or a TIC ID (e.g., '268644785').\n")
+        print("USAGE:  tvguide [--source=] [--infile=]\n\nwhere the source string can be\n  - a name (e.g., 'Cyg X-1'), \n  - a pair of (RA,DEC) coordinates in decimal, (e.g., '101.295, -16.699'), \n  - a pair of (RA,DEC) coordinates in sexagesimal (e.g., '6 45 10.8, -16 41 58'), \n  - or a TIC ID (e.g., '268644785').\n\nor an input file consisting of a CSV file with RA,DEC pairs.\n")
 
     return
 
